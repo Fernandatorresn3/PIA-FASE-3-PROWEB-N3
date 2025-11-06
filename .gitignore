@@ -1,0 +1,174 @@
+# ===================================
+# General
+# ===================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.log
+*.tmp
+*.temp
+
+# ===================================
+# IDEs and Editors
+# ===================================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+.metadata/
+bin/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ===================================
+# Backend - Maven/Spring Boot
+# ===================================
+backend-springboot/target/
+backend-springboot/.mvn/
+backend-springboot/mvnw
+backend-springboot/mvnw.cmd
+
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ===================================
+# Backend - Java Source Files (TEMPORAL)
+# Solo durante desarrollo inicial
+# ===================================
+backend-springboot/src/main/java/**/*.java
+backend-springboot/src/test/**/*.java
+
+# ===================================
+# Backend - Resources (TEMPORAL)
+# ===================================
+backend-springboot/src/main/resources/application.properties
+backend-springboot/src/main/resources/application.yml
+backend-springboot/src/main/resources/application-*.properties
+backend-springboot/src/main/resources/static/
+backend-springboot/src/main/resources/templates/
+
+# Pero mantener la estructura de directorios
+!backend-springboot/src/main/java/.gitkeep
+!backend-springboot/src/main/resources/.gitkeep
+!backend-springboot/src/test/.gitkeep
+
+# ===================================
+# Frontend - Node modules
+# ===================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ===================================
+# Frontend - Build y Cache
+# ===================================
+frontend-client/.cache/
+frontend-client/dist/
+frontend-client/build/
+
+# ===================================
+# Database
+# ===================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ===================================
+# Logs
+# ===================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ===================================
+# Environment Variables
+# ===================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+
+# ===================================
+# OS Generated
+# ===================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===================================
+# Backup files
+# ===================================
+*.bak
+*.swp
+*.swo
+*~
+.#*
+
+# ===================================
+# Spring Boot
+# ===================================
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ===================================
+# Spring Boot DevTools
+# ===================================
+.springBeans
+spring-boot-devtools.properties
