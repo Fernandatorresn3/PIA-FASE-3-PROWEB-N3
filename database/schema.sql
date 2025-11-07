@@ -1,111 +1,172 @@
--- Database Creation
-CREATE DATABASE IF NOT EXISTS recipes_db;
-USE recipes_db;
+/* ============================================================
+   Creación de la base de datos
+   ============================================================ */
+DROP DATABASE IF EXISTS RecetasDB;
+CREATE DATABASE IF NOT EXISTS RecetasDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE RecetasDB;
 
--- Table: roles
-CREATE TABLE IF NOT EXISTS roles (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) UNIQUE NOT NULL
-);
 
--- Table: usuarios
-CREATE TABLE IF NOT EXISTS usuarios (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    nombre VARCHAR(50),
-    apellido VARCHAR(50),
-    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
-    activo BOOLEAN DEFAULT TRUE
-);
+/* ============================================================
+   Nuevas Tablas de Lógica
+   ============================================================ */
 
--- Table: usuario_roles (Many-to-Many)
-CREATE TABLE IF NOT EXISTS usuario_roles (
-    usuario_id BIGINT NOT NULL,
-    rol_id BIGINT NOT NULL,
-    PRIMARY KEY (usuario_id, rol_id),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE
-);
+CREATE TABLE Roles (
+	id_rol INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_rol VARCHAR(50) NOT NULL UNIQUE -- 'usuario', 'admin'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table: categorias
-CREATE TABLE IF NOT EXISTS categorias (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) UNIQUE NOT NULL,
-    descripcion VARCHAR(500)
-);
+CREATE TABLE Estados_Comentario (
+	id_estado INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_estado VARCHAR(50) NOT NULL UNIQUE -- 'Pendiente', 'Aprobado', 'Eliminado'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table: recetas
-CREATE TABLE IF NOT EXISTS recetas (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(200) NOT NULL,
-    descripcion TEXT,
-    ingredientes TEXT,
-    instrucciones TEXT,
-    tiempo_preparacion INT,
-    porciones INT,
-    imagen_url VARCHAR(500),
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    usuario_id BIGINT NOT NULL,
-    categoria_id BIGINT,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id) ON DELETE SET NULL
-);
 
--- Table: estados_comentario
-CREATE TABLE IF NOT EXISTS estados_comentario (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) UNIQUE NOT NULL
-);
+/* ============================================================
+   Tabla: Usuarios
+   ============================================================ */
+CREATE TABLE Usuarios (
+	id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_usuario VARCHAR(80) NOT NULL,
+	email VARCHAR(255) NOT NULL UNIQUE,
+	contrasena VARCHAR(255) NOT NULL,
+	foto_perfil_url VARCHAR(255),
+	pais_residencia VARCHAR(100),
+	estado_residencia VARCHAR(100),
+	puesto_cocina VARCHAR(100),
+	preferencia_categoria_receta VARCHAR(100),
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table: comentarios
-CREATE TABLE IF NOT EXISTS comentarios (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    contenido TEXT NOT NULL,
-    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    usuario_id BIGINT NOT NULL,
-    receta_id BIGINT NOT NULL,
-    estado_id BIGINT NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE,
-    FOREIGN KEY (estado_id) REFERENCES estados_comentario(id)
-);
+CREATE INDEX idx_usuario_nombre ON Usuarios(nombre_usuario);
 
--- Table: calificaciones
-CREATE TABLE IF NOT EXISTS calificaciones (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    puntuacion INT NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
-    fecha_calificacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-    usuario_id BIGINT NOT NULL,
-    receta_id BIGINT NOT NULL,
-    UNIQUE KEY unique_user_recipe (usuario_id, receta_id),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE
-);
 
--- Table: recetas_destacadas
-CREATE TABLE IF NOT EXISTS recetas_destacadas (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    receta_id BIGINT NOT NULL,
-    fecha_destacado DATETIME DEFAULT CURRENT_TIMESTAMP,
-    activo BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (receta_id) REFERENCES recetas(id) ON DELETE CASCADE
-);
+/* ============================================================
+   Tabla: Usuario_Rol
+   ============================================================ */
+CREATE TABLE Usuario_Rol (
+	id_usuario_rol INT AUTO_INCREMENT PRIMARY KEY,
+	id_usuario INT NOT NULL UNIQUE,
+	id_rol INT NOT NULL,
+	
+	CONSTRAINT fk_usuariorol_usuario FOREIGN KEY (id_usuario)
+		REFERENCES Usuarios(id_usuario)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_usuariorol_rol FOREIGN KEY (id_rol)
+		REFERENCES Roles(id_rol)
+		ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert default roles
-INSERT INTO roles (nombre) VALUES ('user'), ('admin') ON DUPLICATE KEY UPDATE nombre=nombre;
 
--- Insert default comment statuses
-INSERT INTO estados_comentario (nombre) VALUES ('pendiente'), ('aprobado'), ('rechazado') ON DUPLICATE KEY UPDATE nombre=nombre;
+/* ============================================================
+   Tabla: Categorias
+   ============================================================ */
+CREATE TABLE Categorias (
+	id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+	nombre_categoria VARCHAR(100) NOT NULL UNIQUE,
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert default categories
-INSERT INTO categorias (nombre, descripcion) VALUES
-    ('Desayunos', 'Recetas para el desayuno'),
-    ('Almuerzos', 'Recetas para el almuerzo'),
-    ('Cenas', 'Recetas para la cena'),
-    ('Postres', 'Recetas de postres y dulces'),
-    ('Bebidas', 'Recetas de bebidas y cócteles'),
-    ('Vegetariano', 'Recetas vegetarianas'),
-    ('Saludable', 'Recetas saludables y nutritivas')
-ON DUPLICATE KEY UPDATE nombre=nombre;
+
+/* ============================================================
+   Tabla: Recetas
+   ============================================================ */
+CREATE TABLE Recetas (
+	id_receta INT AUTO_INCREMENT PRIMARY KEY,
+	id_usuario_admin INT NOT NULL,
+	id_categoria INT NOT NULL,
+	nombre_receta VARCHAR(70) NOT NULL,
+	descripcion_corta VARCHAR(200),
+	ingredientes JSON NOT NULL,
+	pasos JSON NOT NULL,
+	ingredientes_text TEXT,
+	pais_origen VARCHAR(100),
+	image_url VARCHAR(255),
+	puntuacion_promedio FLOAT NOT NULL DEFAULT 0,
+	fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	
+	CONSTRAINT fk_recetas_admin FOREIGN KEY (id_usuario_admin)
+		REFERENCES Usuarios(id_usuario)
+		ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_recetas_categoria FOREIGN KEY (id_categoria)
+		REFERENCES Categorias(id_categoria)
+		ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE INDEX idx_recetas_categoria ON Recetas(id_categoria);
+CREATE INDEX idx_recetas_puntuacion ON Recetas(puntuacion_promedio);
+CREATE INDEX idx_recetas_fecha ON Recetas(fecha_creacion);
+CREATE FULLTEXT INDEX ft_recetas_busqueda
+	ON Recetas(nombre_receta, descripcion_corta, ingredientes_text);
+
+
+/* ============================================================
+   Tabla: Comentarios
+   ============================================================ */
+CREATE TABLE Comentarios (
+	id_comentario INT AUTO_INCREMENT PRIMARY KEY,
+	id_receta INT NOT NULL,
+	id_usuario INT NOT NULL,
+	id_estado INT NOT NULL,
+	contenido_comentario VARCHAR(500) NOT NULL,
+	fecha_comentario DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	
+	CONSTRAINT fk_comentario_receta FOREIGN KEY (id_receta)
+		REFERENCES Recetas(id_receta)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_comentario_usuario FOREIGN KEY (id_usuario)
+		REFERENCES Usuarios(id_usuario)
+		ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_comentario_estado FOREIGN KEY (id_estado)
+		REFERENCES Estados_Comentario(id_estado)
+		ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+/* ============================================================
+   Tabla: Calificaciones
+   ============================================================ */
+CREATE TABLE Calificaciones (
+	id_calificacion INT AUTO_INCREMENT PRIMARY KEY,
+	id_receta INT NOT NULL,
+	id_usuario INT NOT NULL,
+	puntuacion TINYINT NOT NULL,
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	
+	CONSTRAINT fk_calificacion_receta FOREIGN KEY (id_receta)
+		REFERENCES Recetas(id_receta)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_calificacion_usuario FOREIGN KEY (id_usuario)
+		REFERENCES Usuarios(id_usuario)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT uq_calificacion_unica UNIQUE (id_receta, id_usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE INDEX idx_calificaciones_receta ON Calificaciones(id_receta);
+
+
+/* ============================================================
+   Tabla: Recetas_Destacadas
+   ============================================================ */
+CREATE TABLE Recetas_Destacadas (
+	id_usuario INT NOT NULL,
+	id_receta INT NOT NULL,
+	created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	
+	PRIMARY KEY (id_usuario, id_receta),
+	
+	CONSTRAINT fk_destacado_usuario FOREIGN KEY (id_usuario)
+		REFERENCES Usuarios(id_usuario)
+		ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_destacado_receta FOREIGN KEY (id_receta)
+		REFERENCES Recetas(id_receta)
+		ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE INDEX idx_destacadas_usuario ON Recetas_Destacadas(id_usuario);
+CREATE INDEX idx_destacadas_receta ON Recetas_Destacadas(id_receta);

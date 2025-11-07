@@ -72,27 +72,6 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # ===================================
-# Backend - Java Source Files (TEMPORAL)
-# Solo durante desarrollo inicial
-# ===================================
-backend-springboot/src/main/java/**/*.java
-backend-springboot/src/test/**/*.java
-
-# ===================================
-# Backend - Resources (TEMPORAL)
-# ===================================
-backend-springboot/src/main/resources/application.properties
-backend-springboot/src/main/resources/application.yml
-backend-springboot/src/main/resources/application-*.properties
-backend-springboot/src/main/resources/static/
-backend-springboot/src/main/resources/templates/
-
-# Pero mantener la estructura de directorios
-!backend-springboot/src/main/java/.gitkeep
-!backend-springboot/src/main/resources/.gitkeep
-!backend-springboot/src/test/.gitkeep
-
-# ===================================
 # Frontend - Node modules
 # ===================================
 node_modules/
