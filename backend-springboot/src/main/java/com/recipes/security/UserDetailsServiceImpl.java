@@ -35,9 +35,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .password(user.getPasswordHash())
                 .authorities(authorities)
                 .accountExpired(false)
-                .accountLocked(!user.getActivo())
+                .accountLocked(false)
                 .credentialsExpired(false)
-                .disabled(!user.getActivo())
+                .disabled(false)
                 .build();
     }
 }

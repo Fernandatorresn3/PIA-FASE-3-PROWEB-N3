@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "Usuarios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,34 +18,44 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(name = "nombre_usuario", unique = true, nullable = false, length = 80)
     private String username;
 
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(unique = true, nullable = false, length = 255)
     private String email;
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "contrasena", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(length = 50)
-    private String nombre;
+    @Column(name = "foto_perfil_url", length = 255)
+    private String fotoPerfilUrl;
 
-    @Column(length = 50)
-    private String apellido;
+    @Column(name = "pais_residencia", length = 100)
+    private String paisResidencia;
 
-    @Column(name = "fecha_registro")
+    @Column(name = "estado_residencia", length = 100)
+    private String estadoResidencia;
+
+    @Column(name = "puesto_cocina", length = 100)
+    private String puestoCocina;
+
+    @Column(name = "preferencia_categoria_receta", length = 100)
+    private String preferenciaCategoriaReceta;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime fechaRegistro;
 
-    @Column(nullable = false)
-    private Boolean activo = true;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "usuario_roles",
-        joinColumns = @JoinColumn(name = "usuario_id"),
-        inverseJoinColumns = @JoinColumn(name = "rol_id")
+        name = "Usuario_Rol",
+        joinColumns = @JoinColumn(name = "id_usuario"),
+        inverseJoinColumns = @JoinColumn(name = "id_rol")
     )
     private Set<Role> roles = new HashSet<>();
 
@@ -61,8 +71,11 @@ public class User {
     @PrePersist
     protected void onCreate() {
         fechaRegistro = LocalDateTime.now();
-        if (activo == null) {
-            activo = true;
-        }
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

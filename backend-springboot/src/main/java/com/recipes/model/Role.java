@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "Roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,9 +17,10 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_rol")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(name = "nombre_rol", unique = true, nullable = false, length = 50)
     private String nombre;
 
     @ManyToMany(mappedBy = "roles")

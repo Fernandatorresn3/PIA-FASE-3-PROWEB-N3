@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "recetas")
+@Table(name = "Recetas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,37 +18,42 @@ public class Recipe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_receta")
     private Long id;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "nombre_receta", nullable = false, length = 70)
     private String titulo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descripcion_corta", length = 200)
     private String descripcion;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "ingredientes_text", columnDefinition = "TEXT")
     private String ingredientes;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "pasos", columnDefinition = "JSON")
     private String instrucciones;
 
-    @Column(name = "tiempo_preparacion")
-    private Integer tiempoPreparacion;
+    @Column(name = "pais_origen", length = 100)
+    private String paisOrigen;
 
-    private Integer porciones;
-
-    @Column(name = "imagen_url", length = 500)
+    @Column(name = "image_url", length = 255)
     private String imagenUrl;
 
-    @Column(name = "fecha_creacion")
+    @Column(name = "puntuacion_promedio")
+    private Float puntuacionPromedio;
+
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "id_usuario_admin", nullable = false)
     private User autor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id")
+    @JoinColumn(name = "id_categoria")
     private Category categoria;
 
     @OneToMany(mappedBy = "receta", cascade = CascadeType.ALL)
@@ -63,5 +68,11 @@ public class Recipe {
     @PrePersist
     protected void onCreate() {
         fechaCreacion = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

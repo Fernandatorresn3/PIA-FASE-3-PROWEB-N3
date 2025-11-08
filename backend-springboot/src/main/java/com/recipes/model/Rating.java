@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "calificaciones", 
-       uniqueConstraints = @UniqueConstraint(columnNames = {"usuario_id", "receta_id"}))
+@Table(name = "Calificaciones", 
+       uniqueConstraints = @UniqueConstraint(columnNames = {"id_usuario", "id_receta"}))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,24 +17,34 @@ public class Rating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_calificacion")
     private Long id;
 
     @Column(nullable = false)
     private Integer puntuacion;
 
-    @Column(name = "fecha_calificacion")
-    private LocalDateTime fechaCalificacion;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "id_usuario", nullable = false)
     private User usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receta_id", nullable = false)
+    @JoinColumn(name = "id_receta", nullable = false)
     private Recipe receta;
 
     @PrePersist
     protected void onCreate() {
-        fechaCalificacion = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }

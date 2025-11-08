@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "estados_comentario")
+@Table(name = "Estados_Comentario")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,9 +17,10 @@ public class CommentStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_estado")
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(name = "nombre_estado", unique = true, nullable = false, length = 50)
     private String nombre;
 
     @OneToMany(mappedBy = "estado", cascade = CascadeType.ALL)

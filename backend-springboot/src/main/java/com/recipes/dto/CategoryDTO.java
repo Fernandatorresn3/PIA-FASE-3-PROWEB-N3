@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class CategoryDTO {
     private Long id;
     private String nombre;
-    private String descripcion;
     private Integer totalRecetas;
 }
