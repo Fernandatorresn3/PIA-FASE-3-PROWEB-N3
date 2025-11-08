@@ -10,7 +10,9 @@ import com.recipes.service.RatingService;
 import com.recipes.service.RecipeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -85,5 +87,36 @@ public class RecipeController {
     public ResponseEntity<RatingDTO> createRating(@PathVariable Long id, @RequestBody RatingDTO ratingDTO) {
         RatingDTO created = ratingService.create(id, ratingDTO);
         return ResponseEntity.ok(created);
+    }
+    
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
+        RecipeDTO created = recipeService.create(recipeDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+    
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
+        RecipeDTO updated = recipeService.update(id, recipeDTO);
+        return ResponseEntity.ok(updated);
+    }
+    
+    @DeleteMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+        recipeService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<Page<RecipeDTO>> searchRecipes(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "12") int limite) {
+        PageRequest pageRequest = PageRequest.of(pagina, limite);
+        Page<RecipeDTO> recipes = recipeService.findAll(null, query, pageRequest);
+        return ResponseEntity.ok(recipes);
     }
 }
