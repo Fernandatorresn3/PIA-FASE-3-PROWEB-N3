@@ -1,5 +1,6 @@
 package com.recipes.security;
 
+import com.recipes.model.Role;
 import com.recipes.model.User;
 import com.recipes.repository.UserRepository;
 import org.slf4j.Logger;
@@ -27,13 +28,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
+        log.info("Searching for user: {}", usernameOrEmail);
+        User user = userRepository.findByEmailOrUsername(usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
 
-        log.info("Loading user: {} with {} roles", usernameOrEmail, user.getRoles().size());
-        user.getRoles().forEach(role -> log.info("Role found: {}", role.getNombre()));
+        log.info("User found: id={}, email={}, username={}", user.getId(), user.getEmail(), user.getUsername());
+        
+        // Force initialization of roles by accessing the collection
+        Set<Role> roles = user.getRoles();
+        log.info("Roles collection initialized: {}", roles != null);
+        log.info("Roles collection size: {}", roles.size());
+        
+        // Explicitly iterate to force lazy loading
+        roles.forEach(role -> log.info("Role: {}", role.getNombre()));
+        
+        if (roles.isEmpty()) {
+            log.warn("User {} has no roles assigned!", usernameOrEmail);
+        }
 
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
+        Set<GrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getNombre()))
                 .collect(Collectors.toSet());
 

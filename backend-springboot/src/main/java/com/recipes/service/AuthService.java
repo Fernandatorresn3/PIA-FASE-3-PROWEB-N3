@@ -80,7 +80,7 @@ public class AuthService {
         String token = tokenProvider.generateToken(authentication);
         Long expiresIn = tokenProvider.getExpirationTime();
 
-        User user = userRepository.findByEmailOrUsername(loginDTO.getEmailOrUsername(), loginDTO.getEmailOrUsername())
+        User user = userRepository.findByEmailOrUsername(loginDTO.getEmailOrUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         UserDTO userDTO = convertToUserDTO(user);
@@ -99,7 +99,7 @@ public class AuthService {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
-        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
+        return userRepository.findByEmailOrUsername(usernameOrEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
     }
 

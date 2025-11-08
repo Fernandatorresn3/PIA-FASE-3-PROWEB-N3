@@ -77,7 +77,7 @@ public class CommentService {
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
-        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
+        return userRepository.findByEmailOrUsername(usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 }

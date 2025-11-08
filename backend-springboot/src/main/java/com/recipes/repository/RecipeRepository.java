@@ -19,6 +19,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Page<Recipe> findByCategoriaId(Long categoriaId, Pageable pageable);
     Page<Recipe> findByTituloContainingIgnoreCase(String titulo, Pageable pageable);
     
+    long countByCategoriaId(Long categoriaId);
+    
     @Query("SELECT r FROM Recipe r WHERE LOWER(r.titulo) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(r.ingredientes) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Recipe> searchByTituloOrIngredientes(@Param("search") String search, Pageable pageable);
     
