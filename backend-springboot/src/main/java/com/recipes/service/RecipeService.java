@@ -51,6 +51,7 @@ public class RecipeService {
         return convertToDTO(recipe);
     }
 
+    @Transactional(readOnly = true)
     public List<RecipeDTO> findFeatured() {
         List<Recipe> recipes = recipeRepository.findFeaturedRecipes();
         return recipes.stream()
