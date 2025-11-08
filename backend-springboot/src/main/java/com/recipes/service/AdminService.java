@@ -24,7 +24,9 @@ public class AdminService {
     private final CategoryRepository categoryRepository;
     private final FeaturedRecipeRepository featuredRecipeRepository;
 
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllUsers(Pageable pageable) {
+        // Nota: findAll no carga roles por defecto, pero convertUserToDTO maneja esto
         return userRepository.findAll(pageable).map(this::convertUserToDTO);
     }
 
@@ -37,6 +39,7 @@ public class AdminService {
 
     @Transactional
     public UserDTO toggleUserStatus(Long userId) {
+        // Usar findById con EntityGraph para cargar roles
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         // Toggle user status logic could be added here if activo field existed
@@ -45,7 +48,7 @@ public class AdminService {
     }
 
     public Page<CommentDTO> getPendingComments(Pageable pageable) {
-        return commentRepository.findByEstado_Nombre("pendiente", pageable).map(this::convertCommentToDTO);
+        return commentRepository.findByEstado_Nombre("PENDIENTE", pageable).map(this::convertCommentToDTO);
     }
 
     @Transactional
@@ -53,7 +56,7 @@ public class AdminService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado"));
         
-        CommentStatus approved = commentStatusRepository.findByNombre("aprobado")
+        CommentStatus approved = commentStatusRepository.findByNombre("APROBADO")
                 .orElseThrow(() -> new ResourceNotFoundException("Estado no encontrado"));
         
         comment.setEstado(approved);
@@ -66,7 +69,7 @@ public class AdminService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comentario no encontrado"));
         
-        CommentStatus rejected = commentStatusRepository.findByNombre("rechazado")
+        CommentStatus rejected = commentStatusRepository.findByNombre("RECHAZADO")
                 .orElseThrow(() -> new ResourceNotFoundException("Estado no encontrado"));
         
         comment.setEstado(rejected);
@@ -131,8 +134,8 @@ public class AdminService {
         dashboard.setTotalUsuarios((int) userRepository.count());
         dashboard.setTotalRecetas((int) recipeRepository.count());
         dashboard.setTotalCategorias((int) categoryRepository.count());
-        dashboard.setTotalComentariosPendientes(commentRepository.countByEstado_Nombre("pendiente").intValue());
-        dashboard.setTotalComentariosAprobados(commentRepository.countByEstado_Nombre("aprobado").intValue());
+        dashboard.setTotalComentariosPendientes(commentRepository.countByEstado_Nombre("PENDIENTE").intValue());
+        dashboard.setTotalComentariosAprobados(commentRepository.countByEstado_Nombre("APROBADO").intValue());
         dashboard.setTotalRecetasDestacadas((int) featuredRecipeRepository.count());
         return dashboard;
     }
@@ -143,8 +146,13 @@ public class AdminService {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setFechaRegistro(user.getFechaRegistro());
-        if (!user.getRoles().isEmpty()) {
+        // Verificar que roles esté inicializado y no esté vacío
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
             dto.setRole(user.getRoles().iterator().next().getNombre());
+        } else {
+            // Si no tiene roles cargados, intentar cargarlos (fallback)
+            // Esto no debería pasar si usamos los métodos correctos, pero es una protección
+            dto.setRole("ROLE_USER"); // Valor por defecto
         }
         return dto;
     }

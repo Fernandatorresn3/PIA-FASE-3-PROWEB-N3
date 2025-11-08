@@ -36,6 +36,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("SELECT r FROM Recipe r LEFT JOIN r.calificaciones c GROUP BY r ORDER BY COUNT(c) DESC")
     List<Recipe> findTopByMostRated(Pageable pageable);
     
-    @Query("SELECT r FROM Recipe r LEFT JOIN r.comentarios c WHERE c.estado.nombre = 'aprobado' GROUP BY r ORDER BY COUNT(c) DESC")
+    @Query("SELECT r FROM Recipe r LEFT JOIN r.comentarios c WHERE c.estado.nombre = 'APROBADO' GROUP BY r ORDER BY COUNT(c) DESC")
     List<Recipe> findTopByMostCommented(Pageable pageable);
 }

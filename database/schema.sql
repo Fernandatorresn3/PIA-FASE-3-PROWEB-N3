@@ -45,17 +45,16 @@ CREATE INDEX idx_usuario_nombre ON Usuarios(nombre_usuario);
    Tabla: Usuario_Rol
    ============================================================ */
 CREATE TABLE Usuario_Rol (
-	id_usuario_rol INT AUTO_INCREMENT PRIMARY KEY,
 	id_usuario INT NOT NULL,
 	id_rol INT NOT NULL,
 	
+	PRIMARY KEY (id_usuario, id_rol),
 	CONSTRAINT fk_usuariorol_usuario FOREIGN KEY (id_usuario)
 		REFERENCES Usuarios(id_usuario)
 		ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_usuariorol_rol FOREIGN KEY (id_rol)
 		REFERENCES Roles(id_rol)
-		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT unique_usuario_rol UNIQUE (id_usuario, id_rol)
+		ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

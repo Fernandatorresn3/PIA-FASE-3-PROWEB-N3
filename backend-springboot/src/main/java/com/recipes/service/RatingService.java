@@ -60,7 +60,7 @@ public class RatingService {
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
-        return userRepository.findByEmailOrUsername(usernameOrEmail)
+        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 

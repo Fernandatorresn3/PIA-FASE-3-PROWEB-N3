@@ -26,35 +26,40 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        log.info("Searching for user: {}", usernameOrEmail);
-        User user = userRepository.findByEmailOrUsername(usernameOrEmail)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+        log.info("Loading user: {}", usernameOrEmail);
+        
+        User user = userRepository.findByEmailOrUsernameWithRoles(usernameOrEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + usernameOrEmail));
 
-        log.info("User found: id={}, email={}, username={}", user.getId(), user.getEmail(), user.getUsername());
+        log.info("User found: id={}, username={}", user.getId(), user.getUsername());
         
-        // Force initialization of roles by accessing the collection
+        // Force initialization of the roles collection
         Set<Role> roles = user.getRoles();
-        log.info("Roles collection initialized: {}", roles != null);
-        log.info("Roles collection size: {}", roles.size());
+        log.info("Roles collection type: {}", roles != null ? roles.getClass().getName() : "null");
+        log.info("Roles collection size before iteration: {}", roles != null ? roles.size() : 0);
         
-        // Explicitly iterate to force lazy loading
-        roles.forEach(role -> log.info("Role: {}", role.getNombre()));
+        // Force iteration to ensure all roles are loaded
+        if (roles != null) {
+            for (Role role : roles) {
+                log.info("Found role: {} (id={})", role != null ? role.getNombre() : "null", role != null ? role.getId() : "null");
+            }
+        }
         
-        if (roles.isEmpty()) {
-            log.warn("User {} has no roles assigned!", usernameOrEmail);
+        if (roles == null || roles.isEmpty()) {
+            log.error("User {} has no roles assigned", usernameOrEmail);
+            throw new UsernameNotFoundException("User has no roles assigned: " + usernameOrEmail);
         }
 
         Set<GrantedAuthority> authorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getNombre()))
                 .collect(Collectors.toSet());
 
-        log.info("Created {} authorities", authorities.size());
-        authorities.forEach(auth -> log.info("Authority: {}", auth.getAuthority()));
+        log.info("Loaded user {} with {} roles and {} authorities", usernameOrEmail, roles.size(), authorities.size());
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(usernameOrEmail)
+                .username(user.getEmail()) // Use email as username for consistency
                 .password(user.getPasswordHash())
                 .authorities(authorities)
                 .accountExpired(false)

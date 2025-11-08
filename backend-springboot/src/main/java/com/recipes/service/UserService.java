@@ -83,10 +83,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
-        return userRepository.findByEmailOrUsername(usernameOrEmail)
+        // Usar método que carga roles explícitamente para evitar problemas
+        return userRepository.findByEmailOrUsernameWithRoles(usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 
@@ -96,7 +98,7 @@ public class UserService {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setFechaRegistro(user.getFechaRegistro());
-        if (!user.getRoles().isEmpty()) {
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
             dto.setRole(user.getRoles().iterator().next().getNombre());
         }
         return dto;

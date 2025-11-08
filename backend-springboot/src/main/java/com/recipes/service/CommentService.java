@@ -29,7 +29,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     public List<CommentDTO> findByRecipeId(Long recipeId) {
-        List<Comment> comments = commentRepository.findByReceta_IdAndEstado_Nombre(recipeId, "aprobado");
+        List<Comment> comments = commentRepository.findByReceta_IdAndEstado_Nombre(recipeId, "APROBADO");
         return comments.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class CommentService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Receta no encontrada"));
         
-        CommentStatus pendingStatus = commentStatusRepository.findByNombre("pendiente")
+        CommentStatus pendingStatus = commentStatusRepository.findByNombre("PENDIENTE")
                 .orElseThrow(() -> new ResourceNotFoundException("Estado de comentario no encontrado"));
         
         Comment comment = new Comment();
@@ -77,7 +77,7 @@ public class CommentService {
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
-        return userRepository.findByEmailOrUsername(usernameOrEmail)
+        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 }

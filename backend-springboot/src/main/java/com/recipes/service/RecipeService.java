@@ -136,7 +136,7 @@ public class RecipeService {
         
         dto.setTotalCalificaciones(recipe.getCalificaciones().size());
         dto.setTotalComentarios((int) recipe.getComentarios().stream()
-                .filter(c -> "APPROVED".equals(c.getEstado().getNombre()))
+                .filter(c -> "APROBADO".equals(c.getEstado().getNombre()))
                 .count());
         
         return dto;
@@ -153,7 +153,7 @@ public class RecipeService {
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
-        return userRepository.findByEmailOrUsername(usernameOrEmail)
+        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 }
