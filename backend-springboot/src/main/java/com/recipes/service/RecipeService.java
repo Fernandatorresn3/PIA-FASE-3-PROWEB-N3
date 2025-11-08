@@ -67,8 +67,22 @@ public class RecipeService {
         recipe.setTitulo(recipeDTO.getTitulo());
         recipe.setDescripcion(recipeDTO.getDescripcion());
         recipe.setIngredientes(recipeDTO.getIngredientes());
-        recipe.setIngredientesJson("[]"); // JSON vacío por defecto
-        recipe.setInstrucciones(recipeDTO.getInstrucciones());
+        
+        // Asegurar que ingredientesJson tenga un valor JSON válido
+        if (recipeDTO.getIngredientes() != null && !recipeDTO.getIngredientes().isEmpty()) {
+            // Si el campo ingredientes tiene valor, crear un JSON array simple
+            recipe.setIngredientesJson("[]");
+        } else {
+            recipe.setIngredientesJson("[]");
+        }
+        
+        // Convertir instrucciones a JSON si es texto plano
+        if (recipeDTO.getInstrucciones() != null) {
+            recipe.setInstrucciones(convertTextToJsonArray(recipeDTO.getInstrucciones()));
+        } else {
+            recipe.setInstrucciones("[]");
+        }
+        
         recipe.setImagenUrl(recipeDTO.getImagenUrl());
         recipe.setPuntuacionPromedio(0.0f);
         recipe.setAutor(currentUser);
@@ -91,7 +105,12 @@ public class RecipeService {
         recipe.setTitulo(recipeDTO.getTitulo());
         recipe.setDescripcion(recipeDTO.getDescripcion());
         recipe.setIngredientes(recipeDTO.getIngredientes());
-        recipe.setInstrucciones(recipeDTO.getInstrucciones());
+        
+        // Convertir instrucciones a JSON si es necesario
+        if (recipeDTO.getInstrucciones() != null) {
+            recipe.setInstrucciones(convertTextToJsonArray(recipeDTO.getInstrucciones()));
+        }
+        
         recipe.setImagenUrl(recipeDTO.getImagenUrl());
         
         if (recipeDTO.getCategoriaId() != null) {
@@ -155,5 +174,44 @@ public class RecipeService {
         String usernameOrEmail = authentication.getName();
         return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    }
+    
+    /**
+     * Convierte texto plano a JSON array
+     * Si el texto ya es JSON válido, lo retorna tal cual
+     * Si es texto plano con saltos de línea, lo convierte a array
+     */
+    private String convertTextToJsonArray(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return "[]";
+        }
+        
+        // Si ya parece ser JSON (empieza con [ o {), retornarlo tal cual
+        String trimmed = text.trim();
+        if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+            return text;
+        }
+        
+        // Convertir texto con saltos de línea a JSON array
+        StringBuilder json = new StringBuilder("[");
+        String[] lines = text.split("\\n");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].trim();
+            if (!line.isEmpty()) {
+                if (json.length() > 1) {
+                    json.append(",");
+                }
+                // Escapar comillas y caracteres especiales
+                String escaped = line.replace("\\", "\\\\")
+                                    .replace("\"", "\\\"")
+                                    .replace("\n", "\\n")
+                                    .replace("\r", "\\r")
+                                    .replace("\t", "\\t");
+                json.append("\"").append(escaped).append("\"");
+            }
+        }
+        json.append("]");
+        
+        return json.toString();
     }
 }

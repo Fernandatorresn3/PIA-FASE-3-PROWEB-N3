@@ -1,11 +1,13 @@
 package com.recipes.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recipes.dto.CategoryDTO;
 import com.recipes.dto.CommentDTO;
 import com.recipes.dto.RatingDTO;
 import com.recipes.dto.RecipeDTO;
 import com.recipes.service.CategoryService;
 import com.recipes.service.CommentService;
+import com.recipes.service.FileStorageService;
 import com.recipes.service.RatingService;
 import com.recipes.service.RecipeService;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -26,13 +29,18 @@ public class RecipeController {
     private final CommentService commentService;
     private final RatingService ratingService;
     private final CategoryService categoryService;
+    private final FileStorageService fileStorageService;
+    private final ObjectMapper objectMapper;
     
     public RecipeController(RecipeService recipeService, CommentService commentService, 
-                          RatingService ratingService, CategoryService categoryService) {
+                          RatingService ratingService, CategoryService categoryService,
+                          FileStorageService fileStorageService, ObjectMapper objectMapper) {
         this.recipeService = recipeService;
         this.commentService = commentService;
         this.ratingService = ratingService;
         this.categoryService = categoryService;
+        this.fileStorageService = fileStorageService;
+        this.objectMapper = objectMapper;
     }
     
     @GetMapping
@@ -96,6 +104,38 @@ public class RecipeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     
+    /**
+     * Crea una receta con imagen (multipart/form-data)
+     * POST /api/recipes/with-image
+     * 
+     * Form fields:
+     * - recipe: JSON string con los datos de la receta (RecipeDTO)
+     * - image: Archivo de imagen (opcional)
+     */
+    @PostMapping("/with-image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<RecipeDTO> createRecipeWithImage(
+            @RequestPart("recipe") String recipeJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            // Parsear el JSON de la receta
+            RecipeDTO recipeDTO = objectMapper.readValue(recipeJson, RecipeDTO.class);
+            
+            // Si se proporcionó una imagen, guardarla y obtener la ruta
+            if (image != null && !image.isEmpty()) {
+                String imagePath = fileStorageService.storeFile(image);
+                recipeDTO.setImagenUrl(imagePath);
+            }
+            
+            // Crear la receta
+            RecipeDTO created = recipeService.create(recipeDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al crear receta con imagen: " + e.getMessage(), e);
+        }
+    }
+    
     @PutMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
@@ -103,9 +143,53 @@ public class RecipeController {
         return ResponseEntity.ok(updated);
     }
     
+    /**
+     * Actualiza una receta con nueva imagen (multipart/form-data)
+     * PUT /api/recipes/{id}/with-image
+     * 
+     * Form fields:
+     * - recipe: JSON string con los datos actualizados
+     * - image: Archivo de imagen (opcional)
+     */
+    @PutMapping("/{id}/with-image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<RecipeDTO> updateRecipeWithImage(
+            @PathVariable Long id,
+            @RequestPart("recipe") String recipeJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            RecipeDTO recipeDTO = objectMapper.readValue(recipeJson, RecipeDTO.class);
+            
+            // Si se proporciona una nueva imagen
+            if (image != null && !image.isEmpty()) {
+                // Obtener la receta actual para eliminar la imagen vieja
+                RecipeDTO currentRecipe = recipeService.findById(id);
+                if (currentRecipe.getImagenUrl() != null) {
+                    fileStorageService.deleteFile(currentRecipe.getImagenUrl());
+                }
+                
+                // Guardar la nueva imagen
+                String imagePath = fileStorageService.storeFile(image);
+                recipeDTO.setImagenUrl(imagePath);
+            }
+            
+            RecipeDTO updated = recipeService.update(id, recipeDTO);
+            return ResponseEntity.ok(updated);
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar receta con imagen: " + e.getMessage(), e);
+        }
+    }
+    
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+        // Obtener la receta para eliminar su imagen
+        RecipeDTO recipe = recipeService.findById(id);
+        if (recipe.getImagenUrl() != null) {
+            fileStorageService.deleteFile(recipe.getImagenUrl());
+        }
+        
         recipeService.delete(id);
         return ResponseEntity.noContent().build();
     }

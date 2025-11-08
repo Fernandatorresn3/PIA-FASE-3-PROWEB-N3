@@ -15,6 +15,10 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
+# Crear directorio para uploads de imágenes
+RUN mkdir -p /app/uploads/recipes && \
+    chmod -R 755 /app/uploads
+
 # Copiar el JAR compilado desde la etapa de build
 COPY --from=build /app/target/*.jar app.jar
 

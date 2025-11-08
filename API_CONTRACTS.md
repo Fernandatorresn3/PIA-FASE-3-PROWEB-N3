@@ -12,6 +12,7 @@ Los siguientes endpoints NO requieren autenticación:
 - `GET /recipes/{id}`
 - `GET /recipes/featured`
 - `GET /categories`
+- `GET /files/**` (acceso público a imágenes)
 
 ### Endpoints Protegidos
 Todos los demás endpoints requieren un token JWT en el header de autorización.
@@ -117,6 +118,60 @@ $.ajax({
 });
 ```
 
+### Petición con archivo (multipart/form-data)
+```javascript
+// HTML: <input type="file" id="imageInput">
+var formData = new FormData();
+formData.append('file', $('#imageInput')[0].files[0]);
+
+$.ajax({
+    url: 'http://localhost:8080/api/files/upload',
+    type: 'POST',
+    headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+    },
+    data: formData,
+    processData: false,
+    contentType: false
+}).done(function(response) {
+    // response.filePath = "/uploads/recipes/uuid.jpg"
+    console.log('Imagen guardada en:', response.filePath);
+}).fail(function(xhr) {
+    // Manejar error
+});
+```
+
+### Petición con archivo + JSON (receta con imagen)
+```javascript
+var recipeData = {
+    titulo: 'string',
+    descripcion: 'string',
+    ingredientes: 'string',
+    instrucciones: 'string',
+    categoriaId: 1
+};
+
+var formData = new FormData();
+formData.append('recipe', JSON.stringify(recipeData));
+formData.append('image', $('#imageInput')[0].files[0]);
+
+$.ajax({
+    url: 'http://localhost:8080/api/recipes/with-image',
+    type: 'POST',
+    headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+    },
+    data: formData,
+    processData: false,
+    contentType: false
+}).done(function(recipe) {
+    // recipe.imagenUrl = "/uploads/recipes/uuid.jpg"
+    var imageUrl = 'http://localhost:8080/api/files/images/' + recipe.imagenUrl.split('/').pop();
+}).fail(function(xhr) {
+    // Manejar error
+});
+```
+
 ---
 
 ## Endpoints Públicos
@@ -215,6 +270,71 @@ Validar token actual.
   }
 }
 ```
+
+---
+
+## Archivos e Imágenes
+
+### POST /files/upload
+Subir una imagen al servidor.
+
+**Headers:** Requiere autenticación
+
+**Content-Type:** `multipart/form-data`
+
+**Form Data:**
+- `file`: Archivo de imagen (jpg, jpeg, png, gif, webp)
+
+**Validaciones:**
+- Tamaño máximo: 5MB
+- Extensiones permitidas: .jpg, .jpeg, .png, .gif, .webp
+
+**Response:** `200 OK`
+```json
+{
+  "fileName": "string",
+  "filePath": "/uploads/recipes/550e8400-e29b-41d4-a716-446655440000.jpg",
+  "fileSize": "string",
+  "message": "Archivo subido exitosamente"
+}
+```
+
+**Nota:** El `filePath` es una ruta relativa que se debe guardar en la base de datos.
+
+---
+
+### GET /files/images/{fileName}
+Obtener una imagen del servidor.
+
+**Acceso:** Público (sin autenticación)
+
+**Response:** `200 OK`
+- Content-Type: `image/jpeg`, `image/png`, etc.
+- Body: Contenido binario de la imagen
+
+**Ejemplo de uso:**
+```html
+<img src="http://localhost:8080/api/files/images/550e8400-e29b-41d4-a716-446655440000.jpg" 
+     alt="Imagen de receta">
+```
+
+**Nota:** Para obtener la URL completa de una imagen desde el campo `imagenUrl` de la base de datos:
+```javascript
+// imagenUrl de BD: "/uploads/recipes/uuid.jpg"
+var fileName = imagenUrl.split('/').pop(); // "uuid.jpg"
+var fullUrl = 'http://localhost:8080/api/files/images/' + fileName;
+```
+
+---
+
+### GET /files/download/{fileName}
+Descargar una imagen (fuerza descarga en lugar de mostrar).
+
+**Acceso:** Público (sin autenticación)
+
+**Response:** `200 OK`
+- Content-Type: `application/octet-stream` o tipo MIME de la imagen
+- Content-Disposition: `attachment; filename="..."`
 
 ---
 
@@ -412,6 +532,112 @@ Calificar una receta.
   "recetaId": "number"
 }
 ```
+
+---
+
+### POST /recipes/with-image
+Crear una receta con imagen.
+
+**Headers:** Requiere autenticación
+
+**Content-Type:** `multipart/form-data`
+
+**Form Data:**
+- `recipe`: JSON string con los datos de la receta
+- `image`: Archivo de imagen (opcional)
+
+**Ejemplo de recipe JSON:**
+```json
+{
+  "titulo": "string",
+  "descripcion": "string",
+  "ingredientes": "string",
+  "instrucciones": "string",
+  "categoriaId": "number"
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "id": "number",
+  "titulo": "string",
+  "descripcion": "string",
+  "ingredientes": "string",
+  "instrucciones": "string",
+  "tiempoPreparacion": "number",
+  "porciones": "number",
+  "imagenUrl": "/uploads/recipes/uuid.jpg",
+  "fechaCreacion": "string (ISO 8601)",
+  "autorNombre": "string",
+  "autorId": "number",
+  "categoriaNombre": "string",
+  "categoriaId": "number",
+  "calificacionPromedio": "number",
+  "totalCalificaciones": "number",
+  "totalComentarios": "number"
+}
+```
+
+**Notas:**
+- Si se proporciona una imagen, se guarda automáticamente y su ruta se asigna a `imagenUrl`
+- Si no se proporciona imagen, `imagenUrl` será null
+- El campo `imagenUrl` contiene la ruta relativa (ej: `/uploads/recipes/uuid.jpg`)
+
+**Mostrar en:** `/create-recipe.html`
+
+---
+
+### PUT /recipes/{id}/with-image
+Actualizar una receta con nueva imagen.
+
+**Headers:** Requiere autenticación
+
+**Content-Type:** `multipart/form-data`
+
+**Form Data:**
+- `recipe`: JSON string con los datos actualizados
+- `image`: Archivo de imagen (opcional)
+
+**Ejemplo de recipe JSON:**
+```json
+{
+  "titulo": "string",
+  "descripcion": "string",
+  "ingredientes": "string",
+  "instrucciones": "string",
+  "categoriaId": "number"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "id": "number",
+  "titulo": "string",
+  "descripcion": "string",
+  "ingredientes": "string",
+  "instrucciones": "string",
+  "tiempoPreparacion": "number",
+  "porciones": "number",
+  "imagenUrl": "/uploads/recipes/uuid.jpg",
+  "fechaCreacion": "string (ISO 8601)",
+  "autorNombre": "string",
+  "autorId": "number",
+  "categoriaNombre": "string",
+  "categoriaId": "number",
+  "calificacionPromedio": "number",
+  "totalCalificaciones": "number",
+  "totalComentarios": "number"
+}
+```
+
+**Comportamiento:**
+- Si se proporciona una nueva imagen, la imagen anterior se elimina automáticamente
+- Si no se proporciona imagen, se mantiene la imagen existente
+- Solo el autor de la receta o un administrador puede actualizarla
+
+**Mostrar en:** `/edit-recipe.html`
 
 ---
 
@@ -684,6 +910,8 @@ Eliminar una receta.
 **Headers:** Requiere autenticación (rol ADMIN)
 
 **Response:** `204 No Content`
+
+**Nota:** Al eliminar una receta, su imagen asociada también se elimina automáticamente del servidor.
 
 ---
 
@@ -1012,7 +1240,18 @@ Listar todas las categorías disponibles.
    - Campos requeridos: No pueden ser nulos o vacíos
    - Email: Debe tener formato válido
 5. **Estados de Comentarios:** `PENDING`, `APPROVED`, `REJECTED`
-6. **Tipos de datos:**
+6. **Imágenes:**
+   - Tamaño máximo: 5MB
+   - Formatos permitidos: JPG, JPEG, PNG, GIF, WebP
+   - Las imágenes se guardan con nombres únicos (UUID) en `/uploads/recipes/`
+   - El campo `imagenUrl` en la base de datos almacena la ruta relativa
+   - Para mostrar una imagen: `http://localhost:8080/api/files/images/{fileName}`
+   - Al eliminar una receta o actualizar su imagen, los archivos antiguos se eliminan automáticamente
+7. **Multipart/Form-Data:**
+   - Usar `FormData()` para enviar archivos
+   - Establecer `processData: false` y `contentType: false` en jQuery
+   - El campo `recipe` debe ser un JSON string (usar `JSON.stringify()`)
+8. **Tipos de datos:**
    - `"string"` = texto
    - `"number"` = número (entero o decimal)
    - `"boolean"` = true/false

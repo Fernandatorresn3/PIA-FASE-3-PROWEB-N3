@@ -80,6 +80,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/files/**").permitAll()  // Permitir acceso público a archivos
                 .requestMatchers(HttpMethod.GET, "/api/recipes", "/api/recipes/**").permitAll()
                 .requestMatchers("/api/categories", "/api/categories/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
