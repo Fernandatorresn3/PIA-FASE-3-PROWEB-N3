@@ -85,8 +85,8 @@ public class UserService {
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return userRepository.findByUsername(username)
+        String usernameOrEmail = authentication.getName();
+        return userRepository.findByEmailOrUsername(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 

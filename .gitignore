@@ -151,3 +151,6 @@ build/
 # ===================================
 .springBeans
 spring-boot-devtools.properties
+DOCKER_README.md
+test-api.sh
+test-api.ps1
