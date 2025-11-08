@@ -64,6 +64,7 @@ public class RecipeService {
         recipe.setTitulo(recipeDTO.getTitulo());
         recipe.setDescripcion(recipeDTO.getDescripcion());
         recipe.setIngredientes(recipeDTO.getIngredientes());
+        recipe.setIngredientesJson("[]"); // JSON vacío por defecto
         recipe.setInstrucciones(recipeDTO.getInstrucciones());
         recipe.setImagenUrl(recipeDTO.getImagenUrl());
         recipe.setPuntuacionPromedio(0.0f);

@@ -27,6 +27,9 @@ public class Recipe {
     @Column(name = "descripcion_corta", length = 200)
     private String descripcion;
 
+    @Column(name = "ingredientes", columnDefinition = "JSON", nullable = false)
+    private String ingredientesJson;
+
     @Column(name = "ingredientes_text", columnDefinition = "TEXT")
     private String ingredientes;
 
