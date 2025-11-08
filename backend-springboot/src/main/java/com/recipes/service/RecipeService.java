@@ -27,6 +27,7 @@ public class RecipeService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public Page<RecipeDTO> findAll(Long categoria, String busqueda, Pageable pageable) {
         Page<Recipe> recipes;
         
@@ -43,6 +44,7 @@ public class RecipeService {
         return recipes.map(this::convertToDTO);
     }
 
+    @Transactional(readOnly = true)
     public RecipeDTO findById(Long id) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Receta no encontrada"));
