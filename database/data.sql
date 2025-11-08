@@ -29,7 +29,7 @@ INSERT INTO Categorias (nombre_categoria) VALUES
 -- Insertar un usuario admin por defecto (contraseña: admin123)
 -- Nota: Esta contraseña está hasheada con BCrypt
 INSERT INTO Usuarios (nombre_usuario, email, contrasena, pais_residencia) VALUES 
-('admin', 'admin@recipes.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'México');
+('admin', 'admin@recipes.com', '$2a$10$h0tEsoNRTwaCC4HEddRn6OrLUjQuWfHxS6MqptMIGe0SyzEGIvqje', 'México');
 
 -- Asignar rol de admin al usuario
 INSERT INTO Usuario_Rol (id_usuario, id_rol) VALUES 

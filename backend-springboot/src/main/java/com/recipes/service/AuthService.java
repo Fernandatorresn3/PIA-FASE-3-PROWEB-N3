@@ -44,8 +44,8 @@ public class AuthService {
         user.setEmail(registrationDTO.getEmail());
         user.setPasswordHash(passwordEncoder.encode(registrationDTO.getPassword()));
 
-        Role userRole = roleRepository.findByNombre("USER")
-                .orElseThrow(() -> new ResourceNotFoundException("Rol USER no encontrado"));
+        Role userRole = roleRepository.findByNombre("ROLE_USER")
+                .orElseThrow(() -> new ResourceNotFoundException("Rol ROLE_USER no encontrado"));
         
         Set<Role> roles = new HashSet<>();
         roles.add(userRole);
