@@ -66,6 +66,7 @@ public class RecipeService {
         recipe.setIngredientes(recipeDTO.getIngredientes());
         recipe.setInstrucciones(recipeDTO.getInstrucciones());
         recipe.setImagenUrl(recipeDTO.getImagenUrl());
+        recipe.setPuntuacionPromedio(0.0f);
         recipe.setAutor(currentUser);
         
         if (recipeDTO.getCategoriaId() != null) {
