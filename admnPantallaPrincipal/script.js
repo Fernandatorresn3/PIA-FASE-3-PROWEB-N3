@@ -1,13 +1,19 @@
-$(document).ready(function(){
-  var path = window.location.pathname.split("/").pop();
+$(document).ready(function ()
+{
+ const path = window.location.pathname.split("/").pop();
 
-  $(".nav-link").each(function(){
-    var href = $(this).attr("href");
+$(".nav-link").each(function ()
+{
+  const href = $(this).attr("href");
 
-    if(href === path){
-      $(this).addClass("active-link");
-    } else {
-      $(this).removeClass("active-link");
-    }
-  });
+  if (href === path)
+  {
+    $(this).addClass("active-linkl");
+  } else{
+    $(this).removeClass("active-link");
+  }
 });
+
+});
+
+
