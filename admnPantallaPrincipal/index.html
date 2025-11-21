@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pantalla Principal</title>
-    <link rel="stylesheet" href="/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bootstrap-icons-1.13.1/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="sidebar">
-    <h2 class="admin-title text-center">Administrador</h2>
+    <h1 class="admin-title text-center">Panel</h1>
 
     <div class="nav-links-container">
         <nav class="nav flex-column">
-            <a href="....." class="nav-link d-flex align-items-center">
+            <a href="../admnCRUDdeRecetas/index.html" class="nav-link d-flex align-items-center">
                 <i class="bi bi-file-earmark"></i>
                 Gestión de Recetas
             </a>
@@ -32,7 +32,14 @@
                 Reportes
             </a>
         </nav>
-        <a href="....." class="nav-link text-danger nav-footer d-flex aling-items-center">
+        
+    
+        <a href="...." class="nav-link nav-footer d-flex align-items-center">
+            <i class="bi bi-arrow-left"></i>
+            <span class="ms-2">Volver</span>
+        </a>
+
+        <a href="....." class="nav-link text-danger nav-footer d-flex align-items-center">
           <i class="bi bi-box-arrow-right"></i>
           <span class="ms-2">Cerrar sesión</span>
         </a>
@@ -40,14 +47,39 @@
 </div>
 
 <div class="main-content">
+
+    <h3>Bienvenido Administrador</h3>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4">
+            <div class="p-3 border rounded text-center">
+                <p><strong>Nuevos comentarios pendientes</strong></p>
+                <h4 id="comentariosPendientes">0</h4>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-3 border rounded text-center">
+                <p><strong>Usuarios Activos Hoy</strong></p>
+                <h4 id="UsuariosActivos">0</h4>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-3 border rounded text-center">
+                <p><strong>Recetas publicadas esta semana</strong></p>
+                <h4 id="recetassemana">0</h4>
+            </div>
+        </div>
+
+
+    </div>
     
-
-
-
 </div>
 
-<script src="/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-<script src="/jquery-ui-1.14.1.custom/jquery-ui.min.js"></script>
+<script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
+<script src="../jquery-ui-1.14.1.custom/jquery-ui.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
