@@ -1,0 +1,86 @@
+.sidebar 
+{
+    width: 20%;
+    min-width: 200px;
+    height: 100vh;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    max-width: none; 
+}
+
+
+.admin-title 
+{
+    color: #000000;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;    
+    white-space: normal;   
+}
+
+.nav-links-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    overflow-y:auto ;
+    height: 100%; 
+}
+
+.nav-link
+ {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px 10px; 
+    color: #495057;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; 
+    transition: all 0.2s;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nav-link:hover {
+    background-color: #e5e7eb;
+    color: black;
+}
+
+.active-link {
+    background-color: #d1d5db;
+    color: black !important;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.nav-link i 
+{
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+.nav-footer 
+{
+    margin-top: auto; 
+}
+
+.main-content
+{
+    margin-left: 20%; 
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/*AQUI ACABA EL PANEL*/
+
