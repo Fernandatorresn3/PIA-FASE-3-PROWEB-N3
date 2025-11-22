@@ -1,0 +1,86 @@
+<!-- pantalla_bienvenida.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recetas Deliciosas - Bienvenida</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="bienvenida.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-light bg-light shadow-sm py-3">
+    <div class="container d-flex justify-content-between">
+      <span class="navbar-brand fw-bold fs-4">RecetasDeliciosas</span>
+      <div>
+        <button class="btn btn-outline-primary me-2" id="btn-login">Iniciar Sesión</button>
+        <button class="btn btn-danger" id="btn-register">Registrarse</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Bienvenida -->
+  <header class="py-5 text-center bienvenida">
+    <h1 class="fw-bold display-5">Bienvenido a Recetas Deliciosas</h1>
+    <p class="text-muted mt-2">Explora recetas con la mejor calificacion.</p>
+  </header>
+
+  <!-- Recetas Destacadas -->
+  <section class="container pb-5">
+    <h3 class="fw-semibold mb-4">Recetas Destacadas</h3>
+    <div class="row g-4">
+
+      <!-- Tarjeta 1 -->
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="card receta-card shadow-sm">
+          <img src="paella_valenciana.jpg" class="card-img-top" alt="receta1">
+          <div class="card-body">
+            <h5 class="card-title">Paella Valenciana</h5>
+            <p class="text-warning mb-2">★★★★★ 4.8</p>
+            <button class="btn btn-primary w-100 ver-receta">Ver Receta</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2 -->
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="card receta-card shadow-sm">
+          <img src="pastor.jpg" class="card-img-top" alt="receta2">
+          <div class="card-body">
+            <h5 class="card-title">Tacos al Pastor</h5>
+            <p class="text-warning mb-2">★★★★★ 4.7</p>
+            <button class="btn btn-primary w-100 ver-receta">Ver Receta</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3 -->
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="card receta-card shadow-sm">
+          <img src="pastel-chocolate.jpg" class="card-img-top" alt="receta3">
+          <div class="card-body">
+            <h5 class="card-title">Pastel de Chocolate</h5>
+            <p class="text-warning mb-2">★★★★★ 4.9</p>
+            <button class="btn btn-primary w-100 ver-receta">Ver Receta</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bootstrap + jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JS externo -->
+  <script src="bienvenida.js"></script>
+</body>
+</html>
+
+
