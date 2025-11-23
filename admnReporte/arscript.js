@@ -1,10 +1,10 @@
-$(document).ready(function ()
-{
- const path = window.location.pathname.split("/").pop();
+$(document).ready(function (){
 
-$(".nav-link").each(function ()
+ const path = window.location.pathname.split("/").pop().toLowerCase();
+
+$(".sidebar nav .nav-link").each(function ()
 {
-  const href = $(this).attr("href");
+  const href = $(this).attr("href").split("/").pop().toLowerCase();
 
   if (href === path)
   {
@@ -13,4 +13,6 @@ $(".nav-link").each(function ()
     $(this).removeClass("active-link");
   }
 });
+
 });
+//AQUI ACABA PANEL//

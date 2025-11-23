@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de usuario</title>
+
+    <link rel="stylesheet" href="../bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="upustyle.css">
+</head>
+<body>
+
+    <!--BARRA DE NAVEGACIÓN FIJA-->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <img src="...." class="logo-img me-2">
+                <span class="navbar-brand mb-0 h1">Recetas Deliciosas</span>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="...." id="linkInicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="...." id="linkRecetas">Recetas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="...." id="linkPerfil">Mi perfil</a></li>
+                    <li class="nav-item d-flex align-items-center ms-2">
+                        <a class="nav-link" href="...." id="logoutBtn">Cerrar sesión</a>
+                        <img id="profileIcon" src="...." class="rounded-circle ms-2 profile-icon">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!--CONTENEDOR PERFIL-->
+    <div class="container-fluid profile-bg min-vh-100 pt-5">
+        <div class="container profile-card p-4 rounded">
+
+            <div class="profile-header mb-4 text-center">
+                <div class="profile-photo-container mb-3">
+                <img id="profilePhoto" src="...." class="profile-photo rounded-circle">
+                </div>
+            </div>
+
+            <div>
+                <div class="profile-text text-center mt-3">
+                <h2 class="text-center mb-2" id="fullName">Nombre Apellido</h2>
+                <p class="text-center text-muted mb-4" id="shortDescription">Descripción corta</p>
+                </div>
+            </div>
+
+            <div class="profile-info mb-4">
+                <div class="mb-2">
+                    <span class="profile-label">Nombre: </span>
+                    <span class="profile-value" id="nombre">xxx</span>
+                </div>
+                <hr>
+                <div class="mb-2">
+                    <span class="profile-label">Apellido: </span>
+                    <span class="profile-value" id="apellido">xxx</span>
+                </div>
+                <hr>
+                <div class="mb-2">
+                    <span class="profile-label">Email: </span>
+                    <span class="profile-value" id="email">xxx</span>
+                </div>
+                <hr>
+                <div class="mb-2">
+                    <span class="profile-label">Fecha de registro: </span>
+                    <span class="profile-value" id="fechaRegistro">xxx</span>
+                </div>
+            </div>
+
+            <!--BOTONES-->
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <button class="btn btn-edit" id="editProfileBtn">Editar Perfil</button>
+                <button class="btn btn-featured" id="viewFeaturedBtn">Mis recetas destacadas</button>
+            </div>
+        </div>
+    </div>
+
+    <!--MODAL EDITAR PERFIL-->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileLabel">Editar Datos de Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="mb-3">
+                            <label for="editNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="editNombre">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editApellido" class="form-label">Apellido</label>
+                            <input type="text" class="form-control" id="editApellido">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editEmail">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../jquery-4.0.0-rc.1.min.js"></script>
+    <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="upuscript.js"></script>
+</body>
+</html>
