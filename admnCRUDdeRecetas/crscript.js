@@ -4,7 +4,7 @@ $(document).ready(function ()
 
 $(".nav-link").each(function ()
 {
-  const href = $(this).attr("href");
+  const href = $(this).attr("href").split("/").pop();
 
   if (href === path)
   {
