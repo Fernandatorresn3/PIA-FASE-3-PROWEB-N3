@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Registro</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 380px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px;
+            width: 50%;
+            cursor: pointer;
+            background: #ddd;
+            border: none;
+            font-size: 16px;
+        }
+
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- PESTAÑAS -->
+    <div class="tabs">
+        <button class="tab active" data-tab="login">Iniciar Sesión</button>
+        <button class="tab" data-tab="register">Registrarse</button>
+    </div>
+
+    <!-- CARD -->
+    <div class="card">
+
+        <!-- FORM LOGIN -->
+        <div id="login" class="tab-content active">
+            <h2>Iniciar Sesión</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Contraseña">
+            <button id="btnLogin">Iniciar Sesión</button>
+            <p class="error" id="loginError"></p>
+        </div>
+
+        <!-- FORM REGISTRO -->
+        <div id="register" class="tab-content">
+            <h2>Registrarse</h2>
+            <input type="text" id="regUser" placeholder="Nombre de usuario">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPass" placeholder="Contraseña">
+            <input type="password" id="regPass2" placeholder="Confirmar contraseña">
+            <button id="btnRegister">Registrarse</button>
+            <p class="error" id="regError"></p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://localhost:8080/api"; // CAMBIAR SEGÚN BACKEND
+
+    // Cambiar pestañas
+    $(".tab").click(function () {
+        $(".tab").removeClass("active");
+        $(this).addClass("active");
+
+        const tab = $(this).data("tab");
+        $(".tab-content").removeClass("active");
+        $("#" + tab).addClass("active");
+    });
+
+    // LOGIN
+    $("#btnLogin").click(function () {
+        let email = $("#loginEmail").val();
+        let pass = $("#loginPassword").val();
+
+        if (!email || !pass) {
+            $("#loginError").text("Rellena todos los campos");
+            return;
+        }
+
+        $.ajax({
+            url: `${API_URL}/auth/login`,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ email, contraseña: pass }),
+            success: function () {
+                window.location.href = "home.html"; 
+            },
+            error: function () {
+                $("#loginError").text("Credenciales incorrectas");
+            }
+        });
+    });
+
+    // REGISTRO
+    $("#btnRegister").click(function () {
+        let user = $("#regUser").val();
+        let email = $("#regEmail").val();
+        let pass = $("#regPass").val();
+        let pass2 = $("#regPass2").val();
+
+        if (!user || !email || !pass || !pass2) {
+            $("#regError").text("Rellena todos los campos");
+            return;
+        }
+
+        if (pass !== pass2) {
+            $("#regError").text("Las contraseñas no coinciden");
+            return;
+        }
+
+        $.ajax({
+            url: `${API_URL}/auth/register`,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ 
+                nombre_usuario: user,
+                email,
+                contraseña: pass,
+                rol: "usuario"
+            }),
+            success: function () {
+                window.location.href = "home.html"; 
+            },
+            error: function () {
+                $("#regError").text("Error al registrar usuario");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+
