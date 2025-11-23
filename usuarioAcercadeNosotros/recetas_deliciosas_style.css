@@ -1,0 +1,25 @@
+  body {
+            background-color: #e9f7ec;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #2e7d32;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .content-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: -30px;
+        }
+        h2 {
+            color: #2e7d32;
+        }
+        .contacto {
+            background-color: #c8e6c9;
+            padding: 20px;
+            border-radius: 10px;
+        }
