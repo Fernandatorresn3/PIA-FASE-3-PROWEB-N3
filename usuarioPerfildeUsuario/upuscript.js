@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     function loadProfile() {
         $.ajax({
-            url: 'http://localhost:8080/api/profile/me',
+            url: '/api/profile/me',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token }
         }).done(function(data) {
@@ -25,7 +25,7 @@ $(document).ready(function() {
     $('#logoutBtn').click(function(e) {
         e.preventDefault();
         $.ajax({
-            url: 'http://localhost:8080/api/auth/logout',
+            url: '/api/auth/logout',
             type: 'POST',
             headers: { 'Authorization': 'Bearer ' + token }
         }).always(function() {
@@ -38,6 +38,7 @@ $(document).ready(function() {
     $('#editProfileBtn').click(function() {
         $('#editNombre').val($('#nombre').text());
         $('#editApellido').val($('#apellido').text());
+        $('#editDescripcion').val($('#shortDescription').text());
         $('#editEmail').val($('#email').text());
         $('#editProfileModal').modal('show');
     });
@@ -48,11 +49,12 @@ $(document).ready(function() {
         const updatedData = {
             nombre: $('#editNombre').val(),
             apellido: $('#editApellido').val(),
+            descripcion: $('#editDescripcion').val(),
             email: $('#editEmail').val()
         };
 
         $.ajax({
-            url: 'http://localhost:8080/api/profile/me',
+            url: '/api/profile/me',
             type: 'PUT',
             headers: { 'Authorization': 'Bearer ' + token },
             contentType: 'application/json',
@@ -60,6 +62,7 @@ $(document).ready(function() {
         }).done(function(data) {
             $('#nombre').text(data.nombre);
             $('#apellido').text(data.apellido);
+            $('#shortDescription').text(data.descripcion || ' ');
             $('#email').text(data.email);
             $('#fullName').text(data.nombre + " " + data.apellido);
             $('#editProfileModal').modal('hide');
@@ -72,8 +75,12 @@ $(document).ready(function() {
     });
 
     //Resaltar página activa
-    const path = window.location.pathname;
-    if(path.includes("perfil")) $('#linkPerfil').addClass('current');
-    else if(path.includes("recetas")) $('#linkRecetas').addClass('current');
-    else $('#linkInicio').addClass('current');
+   $('.navbar-nav .nav-link').each(function(){
+    const href = $(this).attr('href');
+    if(window.location.href.includes(href)){
+        $(this).addClass('current');
+    }else{
+        $(this).removeClass('current');
+    }
+   });
 });
