@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal Usuario</title>
+
+    <link rel="stylesheet" href="../bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="usppstyle.css">
+</head>
+<body>
+
+    <!--BARRA DE NAVEGACIÓN FIJA-->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <img src="...." class="logo-img me-2">
+                <span class="navbar-brand mb-0 h1">Recetas Deliciosas</span>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="usppindex.html" id="linkInicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../usuarioRecetasDestacadas/RecetasDestacadas.html" id="linkRecetas">Recetas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../usuarioPerfildeUsuario/upuindex.html" id="linkPerfil">Mi perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../usuarioAcercadeNosotros/index.html" id="AcercadeNosotros">Acerca de nosotros</a></li>
+                    <li class="nav-item d-flex align-items-center ms-2">
+                        <a class="nav-link" href="...." id="logoutBtn">Cerrar sesión</a>
+                        <img id="profileIcon" src="...." class="rounded-circle ms-2 profile-icon">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!--CONTENIDO-->
+    <div class="container dashboard-container">
+
+        <h2 id="greetingUser" class="dashboard-title">Hola, Usuario</h2>
+        <p class="dashboard-subtitle">Descubre nuevas recetas</p>
+
+        <div class="row align-items-center my-4">
+            <div class="col-md-8">
+                <input class="form-control form-control-lg" id="serachInput" placeholder="Buscar receta...">
+            </div>
+
+            <div class="col-md-4">
+                <select class="form-select form-select-lg" id="categoryFilter">
+                    <option value="">Todas las cateogrías</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="recipesGrid" class="row g-4"></div>
+
+        <div class="d-flex justify-content-center my-4">
+            <button class="btn btn-success me-2" id="prevPageBtn">Anterior </button>
+            <button class="btn btn-succes" id="nextPageBtn">Siguiente</button>
+        </div>
+    </div>
+
+    <script src="../jquery-4.0.0-rc.1.min.js"></script>
+    <script src="../bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="usppscritp.js"></script>
+</body>
+</html>

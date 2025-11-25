@@ -13,10 +13,36 @@
 </head>
 <body>
 
-    <header class="header">
-        <h1>Recetas Deliciosas</h1>
-        <p>Acerca de Nosotros</p>
-    </header>
+    <!--BARRA NAV-->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <img src="...." class="logo-img me-2">
+                <span class="navbar-brand mb-0 h1">Recetas Deliciosas</span>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="../usuarioPantallaPrincipal/usppindex.html" id="linkInicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../usuarioRecetasDestacadas/RecetasDestacadas.html" id="linkRecetas">Recetas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../usuarioPerfildeUsuario/upuindex.html" id="linkPerfil">Mi perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html" id="linkPerfil">Acerca de nosotros</a></li>
+                    <li class="nav-item d-flex align-items-center ms-2">
+                        <a class="nav-link" href="...." id="logoutBtn">Cerrar sesión</a>
+                        <img id="profileIcon" src="...." class="rounded-circle ms-2 profile-icon">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="Titulo">
+        <h1>Acerca de Nosotros</h1>
+    </div>
 
     <div class="container">
         <section class="content-section mt-5">
