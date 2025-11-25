@@ -151,15 +151,25 @@
 
 
 <script>
-    const API_URL = "http://localhost:8080/api"; // AJUSTAR BACKEND
-    const userId = 1; 
+    const API_URL = "http://localhost:8080/api";
 
-    // Cargar recetas destacadas
     function cargarDestacados() {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("No hay sesión activa.");
+            window.location.href = "../../public/login/InicioDeSesion.html";
+            return;
+        }
+
         $.ajax({
-            url: `${API_URL}/destacados/${userId}`,
+            url: `${API_URL}/profile/favorites`,
             method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
             success: function (data) {
+
                 if (!data || data.length === 0) {
                     $("#recetasContainer").hide();
                     $("#emptyMsg").show();
@@ -172,36 +182,40 @@
                 data.forEach(receta => {
                     $("#recetasContainer").append(`
                         <div class="card">
-                            <img src="${receta.imagen_url || 'https://via.placeholder.com/300'}">
+                            <img src="${receta.imagenUrl || 'https://via.placeholder.com/300'}">
                             <h3>${receta.nombre}</h3>
-                            
-                            <button class="btn btn-view" onclick="verReceta(${receta.id_receta})">
+
+                            <button class="btn btn-view" onclick="verReceta(${receta.id})">
                                 Ver Receta
                             </button>
 
-                            <button class="btn btn-remove" onclick="quitarDestacado(${receta.id_receta})">
+                            <button class="btn btn-remove" onclick="quitarDestacado(${receta.id})">
                                 Quitar de Destacados
                             </button>
                         </div>
                     `);
                 });
             },
-            error: function () {
+            error: function (xhr) {
+                console.error(xhr);
                 alert("Error al cargar recetas destacadas.");
             }
         });
     }
 
-    // Ver receta → va a la pantalla de detalle
-    function verReceta(idReceta) {
-        window.location.href = `../detalle-receta/DetalleDeReceta.html?id=${idReceta}`;
+    function verReceta(id) {
+        window.location.href = `../detalle-receta/DetalleDeReceta.html?id=${id}`;
     }
 
-    // Quitar receta de favoritos
     function quitarDestacado(idReceta) {
+        const token = localStorage.getItem("token");
+
         $.ajax({
-            url: `${API_URL}/destacados/${userId}/${idReceta}`,
+            url: `${API_URL}/profile/favorites/${idReceta}`,
             method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + token
+            },
             success: function () {
                 cargarDestacados();
             },
@@ -211,7 +225,6 @@
         });
     }
 
-    // Cargar al abrir
     cargarDestacados();
 </script>
     <script>
