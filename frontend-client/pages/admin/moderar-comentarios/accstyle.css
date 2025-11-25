@@ -58,8 +58,8 @@
 }
 
 .active-link {
-    background-color: #656c68;
-    color: rgb(81, 219, 116) !important;
+    background-color: #e5e7eb;
+    color: #66bb6a !important;
     font-weight: 600;
     border-radius: 20px;
 }
@@ -80,4 +80,44 @@
     margin-left: 20%; 
     padding: 20px;
     box-sizing: border-box;
+}
+
+/*COMENTARIOS*/
+
+#commentsTable th {
+    font-weight: 600;
+    color: #6c757d;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#commentsTable td {
+    color: #6c757d
+}
+
+.approve-btn {
+    margin-right: 5px;
+}
+
+.btn-sm{
+    font-size: 0.85;
+}
+
+.approve-btn:hover{
+    background-color: #66bb6a;
+
+}
+
+.delete-btn:hover{
+    background-color: red;
+}
+
+@media (max-width: 768px) {
+    .main-content{
+        margin-left: 0;
+    }
+}
+
+#commentsTable th {
+    color: #777879;
 }

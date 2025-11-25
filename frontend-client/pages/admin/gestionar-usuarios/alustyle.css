@@ -59,9 +59,9 @@
 
 .active-link {
     background-color: #e5e7eb;
-    /*color: rgb(81, 219, 116) !important;
+    color: #66bb6a !important;
     font-weight: 600;
-    border-radius: 20px;*/
+    border-radius: 20px;
 }
 
 .nav-link i 

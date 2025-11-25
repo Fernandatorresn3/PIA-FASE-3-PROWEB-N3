@@ -37,9 +37,12 @@ $(document).ready(function() {
             });
         })
         .fail(function(xhr, status, error) {
-            console.error("Error al cargar categorías:", error);
-            alert("No se pudieron cargar las categorías. Revisa la consola.");
-        });
+    console.error("Error al cargar categorías:");
+    console.log("Status:", status);
+    console.log("Error:", error);
+    console.log("XHR response:", xhr.responseText);
+});
+
     }
 
     loadCategories();
@@ -65,7 +68,7 @@ $(document).ready(function() {
   };
 
   $.ajax({
-    url: 'http://localhost:8080/api/recipes',
+    url: 'http://localhost:8080/api/admin/recipes',
     type: 'POST',
     headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
     contentType: 'application/json',
