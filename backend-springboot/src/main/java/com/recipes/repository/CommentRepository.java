@@ -14,4 +14,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findByEstado_Nombre(String estadoNombre, Pageable pageable);
     List<Comment> findByUsuario_Id(Long usuarioId);
     Long countByEstado_Nombre(String estadoNombre);
+    Long countByReceta_IdAndEstado_Nombre(Long recetaId, String estadoNombre);
 }

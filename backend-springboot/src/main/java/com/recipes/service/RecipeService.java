@@ -6,6 +6,8 @@ import com.recipes.model.Category;
 import com.recipes.model.Recipe;
 import com.recipes.model.User;
 import com.recipes.repository.CategoryRepository;
+import com.recipes.repository.CommentRepository;
+import com.recipes.repository.RatingRepository;
 import com.recipes.repository.RecipeRepository;
 import com.recipes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,8 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final RatingRepository ratingRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     public Page<RecipeDTO> findAll(Long categoria, String busqueda, Pageable pageable) {
@@ -153,10 +157,12 @@ public class RecipeService {
         Double avgRating = recipeRepository.getAverageRating(recipe.getId());
         dto.setCalificacionPromedio(avgRating != null ? avgRating : 0.0);
         
-        dto.setTotalCalificaciones(recipe.getCalificaciones().size());
-        dto.setTotalComentarios((int) recipe.getComentarios().stream()
-                .filter(c -> "APROBADO".equals(c.getEstado().getNombre()))
-                .count());
+        // Usar queries directas en lugar de lazy collections
+        Long totalRatings = ratingRepository.countByRecetaId(recipe.getId());
+        dto.setTotalCalificaciones(totalRatings != null ? totalRatings.intValue() : 0);
+        
+        Long totalComments = commentRepository.countByReceta_IdAndEstado_Nombre(recipe.getId(), "APROBADO");
+        dto.setTotalComentarios(totalComments != null ? totalComments.intValue() : 0);
         
         return dto;
     }
