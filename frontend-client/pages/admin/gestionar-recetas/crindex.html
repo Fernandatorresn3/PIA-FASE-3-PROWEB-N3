@@ -3,13 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUDRECETAS</title>
+    <title>CRUD Recetas</title>
+
+    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="../../../libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../../libs/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="crstyle.css">
+
+    <style>
+        /* ===== PANEL LATERAL ===== */
+        .sidebar {
+            width: 20%;
+            min-width: 200px;
+            height: 100vh;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-sizing: border-box;
+        }
+
+        .admin-title {
+            color: #000000;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .nav-links-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        .nav-link {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 15px 10px;
+            color: #495057;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background-color: #e5e7eb;
+            color: black;
+        }
+
+        .active-link {
+            background-color: #d1d5db;
+            color: black !important;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+
+        .nav-link i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .nav-footer {
+            margin-top: auto;
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .main-content {
+            margin-left: 20%;
+            padding: 20px;
+        }
+
+        .action-btn {
+            margin-right: 8px;
+        }
+
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
+
 <body>
 
+<!-- PANEL LATERAL -->
 <div class="sidebar">
     <h1 class="admin-title text-center">Panel</h1>
 
@@ -19,15 +107,15 @@
                 <i class="bi bi-file-earmark"></i>
                 Gestión de Recetas
             </a>
-            <a href="../gestionar-usuarios/aluindex.html" class="nav-link active d-flex align-items-center">
+            <a href="../gestionar-usuarios/aluindex.html" class="nav-link d-flex align-items-center">
                 <i class="bi bi-people"></i>
                 Gestión de Usuarios
             </a>
-            <a href="../moderar-comentarios/accindex.html" class="nav-link active d-flex align-items-center">
+            <a href="../moderar-comentarios/accindex.html" class="nav-link d-flex align-items-center">
                 <i class="bi bi-shield-check"></i>
                 Moderación
             </a>
-            <a href="../reportes/arindex.html" class="nav-link active d-flex align-items-center">
+            <a href="../reportes/arindex.html" class="nav-link d-flex align-items-center">
                 <i class="bi bi-bar-chart-line"></i>
                 Reportes
             </a>
@@ -36,8 +124,7 @@
                 Crear receta
             </a>
         </nav>
-        
-    
+
         <a href="../dashboard/appindex.html" class="nav-link nav-footer d-flex align-items-center">
             <i class="bi bi-arrow-left"></i>
             <span class="ms-2">Volver</span>
@@ -45,18 +132,117 @@
 
         <a href="../../public/login/InicioDeSesion.html" class="nav-link text-danger nav-footer d-flex align-items-center">
             <i class="bi bi-box-arrow-right"></i>
-          <span class="ms-2">Cerrar sesión</span>
+            <span class="ms-2">Cerrar sesión</span>
         </a>
 
     </div>
 </div>
 
+<!-- ===== CONTENIDO CRUD ===== -->
+<div class="main-content">
 
+    <h1 class="mb-4">Gestión de Recetas</h1>
+
+    <!-- BOTÓN CREAR RECETA -->
+    <button class="btn btn-primary mb-4" onclick="location.href='../crear-receta/acreindex.html'">
+        <i class="bi bi-plus-lg"></i> Crear Nueva Receta
+    </button>
+
+    <!-- TABLA CRUD -->
+    <div class="table-container">
+        <table class="table table-bordered table-striped" id="recipesTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Receta</th>
+                    <th>Categoría</th>
+                    <th>Fecha Creación</th>
+                    <th>Puntuación Promedio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="recipesBody">
+                <!-- Se llenará dinámicamente -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
+
+<!-- BOOTSTRAP + JQUERY -->
 <script src="../../../libs/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../../../libs/jquery-ui/jquery-ui.min.js"></script>
-<script src="crscript.js"></script>
+
+<script>
+/* ============================================================
+   MARCAR SECCIÓN ACTIVA
+   ============================================================ */
+$(document).ready(function () {
+    const path = window.location.pathname.split("/").pop().toLowerCase();
+    $(".sidebar nav .nav-link").each(function () {
+        const href = $(this).attr("href").split("/").pop().toLowerCase();
+        if (href === path) {
+            $(this).addClass("active-link");
+        }
+    });
+
+    loadRecipes();
+});
+
+/* ============================================================
+   CARGAR LISTA DE RECETAS DESDE EL BACKEND
+   ============================================================ */
+function loadRecipes() {
+    fetch("http://localhost:8080/api/recipes")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("recipesBody");
+            tbody.innerHTML = "";
+
+            data.forEach(recipe => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${recipe.id}</td>
+                        <td>${recipe.title}</td>
+                        <td>${recipe.categoryName || "Sin categoría"}</td>
+                        <td>${recipe.createdAt || "N/A"}</td>
+                        <td>${recipe.averageRating || 0}</td>
+
+                        <td>
+                            <button class="btn btn-warning btn-sm action-btn"
+                                onclick="editRecipe(${recipe.id})">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </button>
+
+                            <button class="btn btn-danger btn-sm"
+                                onclick="deleteRecipe(${recipe.id})">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => console.log("Error cargando recetas:", err));
+}
+
+/* ============================================================
+   EDITAR RECETA
+   ============================================================ */
+function editRecipe(id) {
+    location.href = `../crear-receta/acreindex.html?edit=${id}`;
+}
+
+/* ============================================================
+   ELIMINAR RECETA
+   ============================================================ */
+function deleteRecipe(id) {
+    if (!confirm("¿Seguro que deseas eliminar esta receta?")) return;
+
+    fetch(`http://localhost:8080/api/recipes/${id}`, { method: "DELETE" })
+        .then(() => loadRecipes());
+}
+</script>
+
 </body>
 </html>
