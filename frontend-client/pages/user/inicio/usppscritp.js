@@ -9,6 +9,35 @@ $(document).ready(function() {
     let busqueda = '';
     let categoria = '';
 
+    // Insertar botón de Dashboard si el usuario es admin
+    function setupAdminButton() {
+        const userStr = localStorage.getItem('user');
+        if (!userStr) return;
+        try {
+            const userObj = JSON.parse(userStr);
+            // Soportar tanto user.role como user.roles (array) por seguridad
+            const isAdmin = (userObj && (userObj.role === 'ROLE_ADMIN' || (Array.isArray(userObj.roles) && userObj.roles.includes('ROLE_ADMIN'))));
+            if (isAdmin) {
+                const adminBtnHtml = `<a id="adminBtn" class="btn btn-warning btn-sm me-2" href="../../admin/dashboard/appindex.html"><i class="bi bi-speedometer2"></i> Dashboard</a>`;
+                const $logout = $('#logoutBtn');
+                if ($logout.length) {
+                    $logout.before(adminBtnHtml);
+                } else {
+                    // Fallback: intentar añadir al elemento con id 'navbar' si existe
+                    const $nav = $('#navbar');
+                    if ($nav.length) {
+                        $nav.append(adminBtnHtml);
+                    } else {
+                        // Si no hay donde insertarlo, loguear para depuración
+                        console.warn('No se encontró #logoutBtn ni #navbar para insertar el botón de admin');
+                    }
+                }
+            }
+        } catch (err) {
+            console.error('Error parsing user from localStorage', err);
+        }
+    }
+
     // Cargar categorías
     function loadCategories() {
         $.ajax({
@@ -159,6 +188,8 @@ $(document).ready(function() {
     });
 
 
+    // Insert admin button if applicable, then load categories and recipes
+    setupAdminButton();
     loadCategories();
     loadRecipes();
 
