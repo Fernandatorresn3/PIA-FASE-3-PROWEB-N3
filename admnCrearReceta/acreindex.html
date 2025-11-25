@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de usuarios</title>
+    <title>Crear receta</title>
     <link rel="stylesheet" href="../bootstrap-5.3.8-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../bootstrap-icons-1.13.1/bootstrap-icons.css">
     <link rel="stylesheet" href="acrestyle.css">
@@ -32,7 +32,7 @@
                 <i class="bi bi-bar-chart-line"></i>
                 Reportes
             </a>
-            <a href="...." class="nav-link d-flex align-items-center">
+            <a href="../admnCrearReceta/acreindex.html" class="nav-link d-flex align-items-center">
                 <i class="bi bi-file-earmark-plus"></i>
                 Crear receta
             </a>
@@ -49,6 +49,50 @@
           <span class="ms-2">Cerrar sesión</span>
         </a>
     </div>
+</div>
+
+<!--CONTENIDO RECETA NUEVA-->
+<div class="main-content">
+    <h2 class="text-center mb-4 text-dark">Nueva Receta</h2>
+    <form id="newRecipeForm" class="recipe-form">
+
+        <div class="mb-3">
+            <label for="recipeName" class="form-label">Nombre receta</label>
+            <input type="text" class="form-control form-control-oval" id="recipeName" placeholder="Ej: Tacos de birria" maxlength="100" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="shortDescription" class="form-label">Descripción corta </label>
+            <input type="text" class="form-control form-control-oval" id="shortDescription" placeholder="Ej: Tacos tipicos de México" maxlength="100" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="countryOrigin" class="form-label">País de origen</label>
+            <input type="text" class="form-control form-control-oval" id="countryOrigin" placeholder="Ej:México"  required>
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Categoría</label>
+            <select class="form-select form-control-oval" id="category" required>
+                <option value="">Selecciona una cateogoría</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="Ingredients" class="form-label">Ingredientes</label>
+            <textarea class="form-control form-control-oval" id="ingredients" rows="6" placeholder="Ej:500g de carne, tortillas.." required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="steps" class="form-label">Pasos</label>
+            <textarea class="form-control form-control-oval" id="steps" rows="7" placeholder="Ej: 1.Cortar carne..2.Agregar cebolla" required></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar receta</button>
+        </div>  
+    </form>
 </div>
 
 

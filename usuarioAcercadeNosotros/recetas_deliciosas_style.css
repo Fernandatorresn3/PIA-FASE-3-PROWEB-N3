@@ -15,11 +15,47 @@
             padding: 30px;
             margin-top: -30px;
         }
-        h2 {
-            color: #2e7d32;
+        
+        h2{
+            color: #66bb6a;
         }
+        
         .contacto {
             background-color: #c8e6c9;
             padding: 20px;
             border-radius: 10px;
         }
+    
+        .Titulo{
+            margin-top: 80px;
+            text-align: center;
+            
+        }
+
+/*BARRA NAV*/
+.navbar-custom {
+    background-color: #66bb6a;
+}
+
+.navbar-custom .nav-link {
+    color: black;
+    font-weight: 500;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.navbar-custom .nav-link.current {
+    font-weight: bold;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}

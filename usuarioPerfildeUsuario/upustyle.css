@@ -1,0 +1,150 @@
+/*BARRA DE NAVEGACIÓN*/
+.navbar-custom {
+    background-color: #66bb6a;
+}
+
+.navbar-custom .nav-link {
+    color: black;
+    font-weight: 500;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.navbar-custom .nav-link.current {
+    font-weight: bold;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+/*CONTENEDOR*/
+
+
+.profile-bg {
+    background-color: #f2f2f2; 
+    padding-top: 0;
+    padding-bottom: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.profile-card {
+    background-color: white;
+    width: 70%;
+    max-width: 800px;
+    margin-top: 20vh; /* 20% desde arriba */
+    margin-bottom: 20vh; /* 20% desde abajo */
+    margin-left: 15%;
+    margin-right: 15%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+/*PERFIL*/
+
+.profile-header
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.profile-photo-container
+{
+    flex-shrink: 0;
+    margin-bottom: 1rem
+}
+
+.profile-photo
+{
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-header h2,
+.profile-header p
+{
+    text-align: center;
+    margin: 0.2rem;
+}
+
+/*DATOS*/
+.profile-info {
+    text-align: left;
+    margin-top: 1rem;
+}
+
+.profile-label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.profile-value {
+    color: #333;
+}
+
+hr{
+    margin: 0.5rem 0;
+}
+
+/*BOTONES*/
+.btn-edit {
+    background-color: #b3e5fc;
+    border: none;
+    color: black;
+}
+
+.btn-featured {
+    background-color: #a5d6a7;
+    border: none;
+    color: black;
+}
+
+/*RESPONSIVO*/
+@media (max-width: 992px) {
+    .profile-card {
+        max-width: 90%;
+    }
+    .navbar-custom .navbar-nav {
+        text-align: center;
+    }
+    .navbar-custom .nav-item {
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-card {
+        max-width: 95%;
+        padding: 1rem;
+    }
+    .profile-photo {
+        width: 100px;
+        height: 100px;
+    }
+    .profile-icon {
+        width: 30px;
+        height: 30px;
+    }
+    .btn-edit, .btn-featured {
+        flex: 1 1 100%;
+        margin-bottom: 5px;
+    }
+}
