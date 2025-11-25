@@ -214,6 +214,23 @@
     // Cargar al abrir
     cargarDestacados();
 </script>
+<script>
+        // Logout functionality
+        $('#logoutBtn').on('click', function(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            
+            $.ajax({
+                url: 'http://localhost:8080/api/auth/logout',
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).always(function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '../../public/login/InicioDeSesion.html';
+            });
+        });
+    </script>
 
 </body>
 </html>
