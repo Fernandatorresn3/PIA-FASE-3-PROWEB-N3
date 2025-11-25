@@ -38,20 +38,82 @@
             </a>
         </nav>
         
-    
         <a href="../admnPantallaPrincipal/appindex.html" class="nav-link nav-footer d-flex align-items-center">
             <i class="bi bi-arrow-left"></i>
             <span class="ms-2">Volver</span>
         </a>
 
         <a href="....." class="nav-link text-danger nav-footer d-flex align-items-center">
-          <i class="bi bi-box-arrow-right"></i>
-          <span class="ms-2">Cerrar sesión</span>
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="ms-2">Cerrar sesión</span>
         </a>
     </div>
 </div>
 
+<div class="main-content bg-light">
+    <h2 class="mb-4">Reportes de Rendimiento</h2>
 
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0"><i class="bi bi-star-fill me-2"></i>Top 5 Mejor Calificadas</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Receta</th>
+                                <th class="text-end">Puntuación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMejorCalificadas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-dark">
+                    <h5 class="card-title mb-0"><i class="bi bi-chat-dots-fill me-2"></i>Top 5 Más Comentadas</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Receta</th>
+                                <th class="text-end">N° Comentarios</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMasComentadas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0"><i class="bi bi-bookmark-heart-fill me-2"></i>Top 5 Más Guardadas</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Receta</th>
+                                <th class="text-end">Veces Guardada</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaMasGuardadas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../jquery-4.0.0-rc.1.min.js"></script>
 <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
 <script src="../jquery-ui-1.14.1.custom/jquery-ui.min.js"></script>
 <script src="arscript.js"></script>

@@ -81,3 +81,12 @@
     padding: 20px;
     box-sizing: border-box;
 }
+
+.card-header {
+    font-weight: 600;
+}
+.table th {
+    background-color: #ffffff;
+    font-weight: 600;
+    color: #555;
+}
