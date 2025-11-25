@@ -18,41 +18,53 @@ $(document).ready(function (){
     }
 
     function cargarReportes() {
-        $.ajax({
-            url: API_RECIPES,
+        $.ajax({            
+            url: API_RECIPES + "?pagina=0&limite=100", // Obtener muchas recetas para análisis
             type: 'GET',
             headers: { 
                 'Authorization': 'Bearer ' + token 
             },
-            success: function(recetas) {
-                console.log("Recetas cargadas:", recetas);
+            success: function(response) {
+                console.log("Recetas cargadas:", response);
+                //El endpoint devuelve una estructura paginada con "content"
+                const recetas = response.content || response;
+                if (!recetas || recetas.length === 0) {
+                    console.warn("No hay recetas disponibles");
+                    $("tablaMejorCalificadas, #tablaMasComentadas, #tablaMasGuardadas").html(
+                        `<tr><td colspan="2" class="text-danger text-center">No hay datos disponibles</td></tr>`
+                    );
+                    return;
+                }                                                                                                                                         
                 procesarYRenderizar(recetas);
             },
             error: function(xhr) {
-                console.error("Error cargando recetas:", xhr);
-                // Mensaje si falla
-                let mensaje = "Error cargando datos";
+            
                 if(xhr.status === 403) mensaje = "No tienes permisos (403)";
                 if(xhr.status === 401) mensaje = "Sesión expirada (401)";
                 
-                $("#tablaMejorCalificadas").html(`<tr><td colspan="2" class="text-danger text-center">${mensaje}</td></tr>`);
+                $("#tablaMejorCalificadas, #tablaMasComentadas, #tablaMasGuardadas").html(
+                    `<tr><td colspan="2" class="text-danger text-center">${mensaje}</td></tr>`);
             }
         });
     }
 
     function procesarYRenderizar(recetas) {
-        // A. Top 5 Mejor Calificadas
+        // A. Top 5 Mejor Calificadas (por calificación promedio)
         const topCalificadas = [...recetas]
+        .filter(r => r.calificacionPromedio > 0)
             .sort((a, b) => b.calificacionPromedio - a.calificacionPromedio)
             .slice(0, 5);
 
         // B. Top 5 Más Comentadas
         const topComentadas = [...recetas]
+        .filter(r => r.totalComentarios > 0)
             .sort((a, b) => b.totalComentarios - a.totalComentarios)
             .slice(0, 5);
 
-        // C. Top 5 Más Guardadas 
+        // C. Top 5 Más Guardadas (Usando totalCalificaciones como proxy de popularidad)
+        //Nota: totalcalificaciones representa el  numero de valoraciones que tiene la receta 
         const topGuardadas = [...recetas]
+        .filter(r => r.totalCalificaciones > 0)
             .sort((a, b) => b.totalCalificaciones - a.totalCalificaciones)
             .slice(0, 5);
 
