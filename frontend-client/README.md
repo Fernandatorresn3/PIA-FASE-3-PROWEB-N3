@@ -61,12 +61,48 @@ Ahora que las carpetas están reorganizadas, las rutas relativas entre páginas 
 ```
 
 ### Desde cualquier página a las librerías:
-- Desde `pages/admin/`: `../../libs/`
-- Desde `pages/user/`: `../../libs/`
-- Desde `pages/public/`: `../../libs/`
+- Desde `pages/admin/`: `../../../libs/`
+- Desde `pages/user/`: `../../../libs/`
+- Desde `pages/public/`: `../../../libs/`
+
+### Ejemplos de rutas a librerías:
+```html
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="../../../libs/bootstrap/css/bootstrap.min.css">
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="../../../libs/bootstrap-icons/bootstrap-icons.css">
+
+<!-- jQuery -->
+<script src="../../../libs/jquery-4.0.0-rc.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="../../../libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- jQuery UI -->
+<script src="../../../libs/jquery-ui/jquery-ui.min.js"></script>
+```
 
 ## Notas
 - Todos los archivos originales se mantuvieron intactos
 - Solo se reorganizó la estructura de carpetas
 - Los nombres de carpetas se estandarizaron usando kebab-case
 - Las librerías están centralizadas en una sola ubicación
+- **✅ Todas las rutas de navegación actualizadas**
+- **✅ Todas las referencias a librerías actualizadas**
+- Las páginas que usan CDN (bienvenida, login, detalle-receta, recetas-destacadas, acerca-de-nosotros) no necesitan actualización
+
+## Resumen de Actualizaciones
+
+### Rutas de Librerías Actualizadas ✅
+Todas las páginas ahora usan las rutas correctas:
+- `../../../libs/bootstrap/css/bootstrap.min.css`
+- `../../../libs/bootstrap/js/bootstrap.bundle.min.js`
+- `../../../libs/bootstrap-icons/bootstrap-icons.css`
+- `../../../libs/jquery-4.0.0-rc.1.min.js`
+- `../../../libs/jquery-ui/jquery-ui.min.js`
+
+### Rutas de Navegación Actualizadas ✅
+- **Páginas de Admin**: Todos los enlaces entre páginas de administrador usan los nuevos nombres
+- **Páginas de Usuario**: Todos los enlaces de navegación usan los nuevos nombres de carpetas
+- **Navegación Cruzada**: Enlaces entre secciones funcionan correctamente
