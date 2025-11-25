@@ -148,12 +148,25 @@
             url: `${API_URL}/auth/login`,
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ email, contraseña: pass }),
-            success: function () {
-                window.location.href = "home.html"; 
+            data: JSON.stringify({ emailOrUsername: email, password: pass }),
+            success: function (response) {
+                // Guardar token y datos del usuario
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+                
+                // Redirigir según el rol
+                if (response.user.role === 'ROLE_ADMIN') {
+                    window.location.href = "../../admin/dashboard/appindex.html";
+                } else {
+                    window.location.href = "../../user/inicio/usppindex.html";
+                }
             },
-            error: function () {
-                $("#loginError").text("Credenciales incorrectas");
+            error: function (xhr) {
+                if (xhr.status === 500) {
+                    $("#loginError").text("Credenciales incorrectas");
+                } else {
+                    $("#loginError").text("Error al iniciar sesión");
+                }
             }
         });
     });
@@ -180,16 +193,26 @@
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ 
-                nombre_usuario: user,
-                email,
-                contraseña: pass,
-                rol: "usuario"
+                username: user,
+                email: email,
+                password: pass,
+                nombre: user,
+                apellido: ""
             }),
-            success: function () {
-                window.location.href = "home.html"; 
+            success: function (response) {
+                // Guardar token y datos del usuario
+                localStorage.setItem('token', response.token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+                
+                // Redirigir a página de usuario
+                window.location.href = "../../user/inicio/usppindex.html";
             },
-            error: function () {
-                $("#regError").text("Error al registrar usuario");
+            error: function (xhr) {
+                if (xhr.status === 409) {
+                    $("#regError").text("El email o usuario ya existe");
+                } else {
+                    $("#regError").text("Error al registrar usuario");
+                }
             }
         });
     });
