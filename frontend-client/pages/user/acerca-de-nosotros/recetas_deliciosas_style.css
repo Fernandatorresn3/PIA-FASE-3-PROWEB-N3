@@ -38,7 +38,7 @@
 }
 
 .navbar-custom .nav-link {
-    color: black;
+    color: black !important;
     font-weight: 500;
     margin-right: 10px;
     text-decoration: none;
@@ -46,6 +46,7 @@
 
 .navbar-custom .nav-link.current {
     font-weight: bold;
+    color: white;
 }
 
 .logo-img {

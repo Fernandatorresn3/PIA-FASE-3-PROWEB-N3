@@ -1,13 +1,15 @@
 $(document).ready(function() {
 
     const apiBase = 'http://localhost:8080/api';
+    const userId = 1; 
+
     let currentPage = 0;
     const pageSize = 10;
-
+    
     let busqueda = '';
     let categoria = '';
 
-    // Función para cargar categorías en el dropdown
+    // Cargar categorías
     function loadCategories() {
         $.ajax({
             url: `${apiBase}/categories`,
@@ -22,7 +24,7 @@ $(document).ready(function() {
         });
     }
 
-    // Función para cargar recetas
+    // Cargar recetas
     function loadRecipes() {
         $.ajax({
             url: `${apiBase}/recipes`,
@@ -37,7 +39,7 @@ $(document).ready(function() {
             const $recipesGrid = $('#recipesGrid');
             $recipesGrid.empty();
 
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 $recipesGrid.append('<p class="text-center">No se encontraron recetas.</p>');
                 return;
             }
@@ -45,6 +47,9 @@ $(document).ready(function() {
             data.forEach(recipe => {
                 const imageFile = recipe.imagenUrl ? recipe.imagenUrl.split('/').pop() : '';
                 const imageUrl = imageFile ? `${apiBase}/files/images/${imageFile}` : 'placeholder.jpg';
+
+                const isDestacada = recipe.destacadaPorUsuario; 
+                const starColor = isDestacada ? 'gold' : 'gray';
 
                 const card = `
                 <div class="col-md-4">
@@ -54,7 +59,7 @@ $(document).ready(function() {
                             <h5 class="card-title">${recipe.titulo}</h5>
                             <p class="card-text mb-1">Calificación: ${recipe.calificacionPromedio || 0} (${recipe.totalCalificaciones || 0} opiniones)</p>
                             <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <i class="bi bi-star fs-4 star-icon" data-id="${recipe.id}" style="cursor:pointer;color:gray;"></i>
+                                <i class="bi bi-star fs-4 star-icon" data-id="${recipe.id}" style="cursor:pointer;color:${starColor};"></i>
                                 <button class="btn btn-primary btn-sm view-recipe-btn" data-id="${recipe.id}">
                                     <i class="bi bi-eye"></i> Ver receta
                                 </button>
@@ -71,21 +76,60 @@ $(document).ready(function() {
         });
     }
 
-    // Evento para búsqueda
+    // Destacar receta 
+    $(document).on('click', '.star-icon', function() {
+        const $icon = $(this);
+        const recipeId = $icon.data('id');
+        const token = localStorage.getItem('token');
+
+        const isHighlighted = $icon.css('color') === 'rgb(255, 215, 0)'; // 
+
+        if (!isHighlighted) {
+            // destacar
+            $.ajax({
+                url: `${apiBase}/profile/favorites/${recipeId}`,
+                type: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).done(function() {
+                $icon.css('color', 'gold');
+            }).fail(function() {
+                alert('No se pudo destacar la receta.');
+            });
+        } else {
+            // Quitar destacado
+            $.ajax({
+                url: `${apiBase}/profile/favorites/${recipeId}`,
+                type: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            }).done(function() {
+                $icon.css('color', 'gray');
+            }).fail(function() {
+                alert('No se pudo quitar el destacado.');
+            });
+        }
+    });
+
+    // Ver receta
+    $(document).on('click', '.view-recipe-btn', function() {
+        const recipeId = $(this).data('id');
+        window.location.href = `../detalle-receta/DetalleDeReceta.html?id=${recipeId}`;
+    });
+
+    // Búsqueda y filtrado
     $('#serachInput').on('input', function() {
         busqueda = $(this).val();
         currentPage = 0;
         loadRecipes();
     });
 
-    // Evento para cambio de categoría
+
     $('#categoryFilter').on('change', function() {
         categoria = $(this).val();
         currentPage = 0;
         loadRecipes();
+
     });
 
-    // Paginación
     $('#prevPageBtn').on('click', function() {
         if (currentPage > 0) {
             currentPage--;
@@ -98,35 +142,11 @@ $(document).ready(function() {
         loadRecipes();
     });
 
-    // Evento para la estrella
-    $(document).on('click', '.star-icon', function() {
-        const $icon = $(this);
-        const recipeId = $icon.data('id');
-
-        // Cambiar color de la estrella
-        if ($icon.css('color') === 'rgb(128, 128, 128)') { // gris
-            $icon.css('color', 'gold');
-        } else {
-            $icon.css('color', 'gray');
-        }
-
-        // Aquí podrías enviar a API para marcar como destacado:
-        // $.post(`${apiBase}/profile/favorites/${recipeId}`, ... )
-        console.log('Receta destacada:', recipeId);
-    });
-
-    // Evento para ver receta
-    $(document).on('click', '.view-recipe-btn', function() {
-        const recipeId = $(this).data('id');
-        // Redirigir a detalle de receta (pantalla que harás después)
-        window.location.href = `../detalle-receta/DetalleDeReceta.html?id=${recipeId}`;
-    });
-
-    // Logout
+    //LOGOUT
     $('#logoutBtn').on('click', function(e) {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        
+    
         $.ajax({
             url: `${apiBase}/auth/logout`,
             type: 'POST',
@@ -138,7 +158,7 @@ $(document).ready(function() {
         });
     });
 
-    // Inicialización
+
     loadCategories();
     loadRecipes();
 

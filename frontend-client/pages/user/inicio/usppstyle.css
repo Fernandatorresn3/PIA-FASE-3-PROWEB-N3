@@ -29,7 +29,7 @@
 /*CONTENIDO*/
 
 body {
-    padding-top: 80px; /* evita que el contenido se tape con la navbar */
+    padding-top: 80px; 
 }
 
 .dashboard-title {
