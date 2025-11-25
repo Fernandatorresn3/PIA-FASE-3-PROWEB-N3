@@ -44,7 +44,7 @@ ALTER TABLE Calificaciones AUTO_INCREMENT = 1;
 INSERT INTO Usuarios (nombre_usuario, email, contrasena, foto_perfil_url, pais_residencia, estado_residencia, puesto_cocina, preferencia_categoria_receta) VALUES 
 -- Usuarios regulares
 ('Maria Garcia', 'maria.garcia@example.com', '$2a$10$h0tEsoNRTwaCC4HEddRn6OrLUjQuWfHxS6MqptMIGe0SyzEGIvqje', 'https://i.pravatar.cc/150?img=1', 'México', 'Ciudad de México', 'Chef Ejecutiva', 'Platos principales'),
-('Juan Perez', 'juan.perez@example.com', '$2a$10$h0tEsoNRTwaCC4HEddRn6OrLUjQuWfHxS6MqptMIGe0SyzEGIvqje', 'https://i.pravatar.cc/150?img=12', 'España', 'Madrid', 'Cocinero Aficionado', 'Postres'),
+('Juan Perez', 'juan.perez@example.com', '$2a$12$pucKzyxtdEp00whvXEwEFOoNKnBC/UDZBBh8d75qbMXey4F1.fLja', 'https://i.pravatar.cc/150?img=12', 'España', 'Madrid', 'Cocinero Aficionado', 'Postres'),
 ('Ana Martinez', 'ana.martinez@example.com', '$2a$10$h0tEsoNRTwaCC4HEddRn6OrLUjQuWfHxS6MqptMIGe0SyzEGIvqje', 'https://i.pravatar.cc/150?img=5', 'Argentina', 'Buenos Aires', 'Chef de Repostería', 'Repostería'),
 ('Carlos Ruiz', 'carlos.ruiz@example.com', '$2a$10$h0tEsoNRTwaCC4HEddRn6OrLUjQuWfHxS6MqptMIGe0SyzEGIvqje', 'https://i.pravatar.cc/150?img=13', 'Colombia', 'Bogotá', 'Cocinero Casero', 'Sopas'),
 ('Laura Sanchez', 'laura.sanchez@example.com', '$2a$10$h0tEsoNRTwaCC4HEddRn6OrLUjQuWfHxS6MqptMIGe0SyzEGIvqje', 'https://i.pravatar.cc/150?img=9', 'Chile', 'Santiago', 'Chef Profesional', 'Vegetariano'),
