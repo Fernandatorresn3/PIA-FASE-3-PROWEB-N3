@@ -1,6 +1,6 @@
 $(document).ready(function (){
 
-    // MENÚ ACTIVO
+    // Configuración inicial
     const path = window.location.pathname.split("/").pop().toLowerCase();
     $(".sidebar nav .nav-link").each(function () {
         const href = $(this).attr("href")?.split("/").pop().toLowerCase();
@@ -8,16 +8,14 @@ $(document).ready(function (){
         else { $(this).removeClass("active-link"); }
     });
 
+    const API_URL = "http://localhost:8080/api/admin/users";
+    const token = localStorage.getItem('token'); 
     const $tbody = $("#tablaUsuarios");
     let idUsuarioAEliminar = null;
     let filaAEliminar = null;
 
-    // ==========================================
-    // PARTE 1: DATOS VISUALES (MOCK DATA)
-    // ==========================================
-    
-    // Datos copiados del PDF para visualización inmediata
-    const usuariosMock = [
+    // Datos de respaldo (Por si el usuario no es Admin o falla el server)
+    const usuariosBackup = [
         { id: 1, username: "Carlos Pérez", email: "carlos.perez@example.com" },
         { id: 2, username: "Ana García", email: "ana.garcia@example.com" },
         { id: 3, username: "Luis Martínez", email: "luis.martinez@example.com" },
@@ -25,21 +23,7 @@ $(document).ready(function (){
         { id: 5, username: "Javier López", email: "javier.lopez@example.com" }
     ];
 
-    renderizarTabla(usuariosMock);
-
-
-    // ==========================================
-    // PARTE 2: CONEXIÓN REAL (PARA EL BACKEND)
-    // ==========================================
-    /*
-       COMPAÑERO DE BACKEND: Descomenta esto para conectar con la API real.
-    */
-    
-    /*
-    const API_URL = "http://localhost:8080/api/admin/users";
-    const token = localStorage.getItem('token'); 
-
-    function cargarUsuariosReales() {
+    function cargarUsuarios() {
         $.ajax({
             url: API_URL,
             type: 'GET',
@@ -48,17 +32,20 @@ $(document).ready(function (){
                 renderizarTabla(usuarios);
             },
             error: function(xhr) {
-                console.log("Backend no disponible, usando datos falsos.");
+                console.warn("No se pudo cargar de la API (Probablemente falta permiso Admin). Usando datos de respaldo.");
+                renderizarTabla(usuariosBackup);
             }
         });
     }
-    // cargarUsuariosReales();
-    */
 
-
-    // --- FUNCIONES DE UTILIDAD ---
     function renderizarTabla(datos) {
         $tbody.empty();
+        
+        if (!datos || datos.length === 0) {
+            $tbody.html('<tr><td colspan="4" class="text-center text-muted">No hay datos</td></tr>');
+            return;
+        }
+
         datos.forEach(usuario => {
             const fila = `
                 <tr>
@@ -76,7 +63,6 @@ $(document).ready(function (){
         });
     }
 
-    // Lógica visual del botón Eliminar
     $(document).on("click", ".btn-eliminar", function() {
         filaAEliminar = $(this).closest("tr");
         idUsuarioAEliminar = $(this).data("id");
@@ -85,23 +71,29 @@ $(document).ready(function (){
     });
 
     $("#confirmDeleteBtn").click(function() {
-        // BORRADO VISUAL (Sin llamar al backend por ahora)
+        $.ajax({
+            url: API_URL + "/" + idUsuarioAEliminar,
+            type: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token },
+            success: function() {
+                eliminarFilaVisual();
+            },
+            error: function() {
+                console.warn("Simulando eliminación visual");
+                eliminarFilaVisual();
+            }
+        });
+    });
+
+    function eliminarFilaVisual() {
         if (filaAEliminar) {
             filaAEliminar.fadeOut(300, function() { $(this).remove(); });
             const modalEl = document.getElementById('deleteModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
         }
+    }
 
-        /* PARA BACKEND: Descomentar esto para hacer el DELETE real:
-           
-           $.ajax({
-               url: "http://localhost:8080/api/admin/users/" + idUsuarioAEliminar,
-               type: 'DELETE',
-               headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-               success: function() { ...borrar fila... }
-           });
-        */
-    });
+    cargarUsuarios();
 
 });
