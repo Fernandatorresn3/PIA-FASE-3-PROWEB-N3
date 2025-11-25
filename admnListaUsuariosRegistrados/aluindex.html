@@ -38,20 +38,58 @@
             </a>
         </nav>
         
-    
         <a href="../admnPantallaPrincipal/appindex.html" class="nav-link nav-footer d-flex align-items-center">
             <i class="bi bi-arrow-left"></i>
             <span class="ms-2">Volver</span>
         </a>
 
-        <a href="....." class="nav-link text-danger nav-footer d-flex align-items-center">
-          <i class="bi bi-box-arrow-right"></i>
-          <span class="ms-2">Cerrar sesión</span>
+        <a href="../IniciodeSesión/index.html" class="nav-link text-danger nav-footer d-flex align-items-center">
+            <i class="bi bi-box-arrow-right"></i>
+            <span class="ms-2">Cerrar sesión</span>
         </a>
     </div>
 </div>
 
+<div class="main-content bg-light">
+    <h2 class="mb-4">Gestión de Usuarios</h2>
 
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="ps-4">ID Usuario</th>
+                        <th scope="col">Nombre Usuario</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaUsuarios">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas eliminar a este usuario?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar Usuario</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../jquery-4.0.0-rc.1.min.js"></script>
 <script src="../bootstrap-5.3.8-dist/js/bootstrap.min.js"></script>
 <script src="../jquery-ui-1.14.1.custom/jquery-ui.min.js"></script>
 <script src="aluscript.js"></script>
