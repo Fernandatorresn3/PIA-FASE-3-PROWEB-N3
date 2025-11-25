@@ -119,7 +119,23 @@ $(document).ready(function() {
     $(document).on('click', '.view-recipe-btn', function() {
         const recipeId = $(this).data('id');
         // Redirigir a detalle de receta (pantalla que harás después)
-        window.location.href = `recipe-detail.html?id=${recipeId}`;
+        window.location.href = `../detalle-receta/DetalleDeReceta.html?id=${recipeId}`;
+    });
+
+    // Logout
+    $('#logoutBtn').on('click', function(e) {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        
+        $.ajax({
+            url: `${apiBase}/auth/logout`,
+            type: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token }
+        }).always(function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '../../public/login/InicioDeSesion.html';
+        });
     });
 
     // Inicialización

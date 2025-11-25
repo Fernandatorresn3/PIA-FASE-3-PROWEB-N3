@@ -30,7 +30,8 @@ $(document).ready(function() {
             headers: { 'Authorization': 'Bearer ' + token }
         }).always(function() {
             localStorage.removeItem('token');
-            window.location.href = '...'; // Página de inicio de sesión
+            localStorage.removeItem('user');
+            window.location.href = '../../public/login/InicioDeSesion.html';
         });
     });
 
@@ -71,7 +72,7 @@ $(document).ready(function() {
 
     //Enlaces
     $('#viewFeaturedBtn').click(function() {
-        window.location.href = '....';
+        window.location.href = '../recetas-destacadas/RecetasDestacadas.html';
     });
 
     //Resaltar página activa
