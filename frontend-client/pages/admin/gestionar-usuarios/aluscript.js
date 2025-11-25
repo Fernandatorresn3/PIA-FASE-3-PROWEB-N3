@@ -28,11 +28,14 @@ $(document).ready(function (){
             url: API_URL,
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token },
-            success: function(usuarios) {
+            success: function(response) {
+                // El backend devuelve una estructura paginada con "content"
+                const usuarios = response.content || response;
                 renderizarTabla(usuarios);
             },
             error: function(xhr) {
-                console.warn("No se pudo cargar de la API (Probablemente falta permiso Admin). Usando datos de respaldo.");
+                console.warn("No se pudo cargar de la API. Error.", xhr.status);
+                console.warn("Cargando datos de respaldo.");
                 renderizarTabla(usuariosBackup);
             }
         });
