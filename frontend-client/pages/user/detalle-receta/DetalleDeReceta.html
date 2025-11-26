@@ -127,6 +127,10 @@
                 url: `${API_URL}/recipes/${recipeId}/comments`,
                 type: "GET"
             }).done(function (comments) {
+                if (!comments || comments.length === 0) {
+                    $("#commentsList").html("<p class='text-muted'>No hay comentarios aún.</p>");
+                    return;
+                }
                 $("#commentsList").empty();
                 comments.forEach(c => {
                     $("#commentsList").append(`
@@ -137,6 +141,9 @@
                         </div>
                     `);
                 });
+            }).fail(function (xhr) {
+                console.error("Error al cargar comentarios:", xhr.status, xhr.responseText);
+                $("#commentsList").html("<p class='text-danger'>Error al cargar comentarios.</p>");
             });
         }
 
@@ -144,10 +151,16 @@
         // 3. Enviar comentario
         // ============================
         $("#sendComment").click(function () {
-            if (!token) return alert("Debes iniciar sesión.");
+            if (!token) {
+                alert("Debes iniciar sesión para comentar.");
+                return;
+            }
 
             let text = $("#commentText").val().trim();
-            if (!text) return;
+            if (!text) {
+                alert("Escribe un comentario antes de enviar.");
+                return;
+            }
 
             $.ajax({
                 url: `${API_URL}/recipes/${recipeId}/comments`,
@@ -158,6 +171,10 @@
             }).done(function () {
                 alert("Comentario enviado (pendiente de aprobación).");
                 $("#commentText").val("");
+                loadComments();
+            }).fail(function (xhr) {
+                console.error("Error al enviar comentario:", xhr.status, xhr.responseText);
+                alert("Error al enviar comentario. Intenta de nuevo.");
             });
         });
 
@@ -196,15 +213,22 @@
         let isFavorite = false;
 
         function checkFavorite() {
-            if (!token) return;
+            if (!token) {
+                console.warn("No hay token. Usuario debe iniciar sesión.");
+                return;
+            }
 
             $.ajax({
                 url: `${API_URL}/profile/favorites`,
                 type: "GET",
                 headers: { Authorization: "Bearer " + token }
             }).done(function (favorites) {
-                isFavorite = favorites.some(f => f.id == recipeId);
-                updateFavButton();
+                if (favorites && Array.isArray(favorites)) {
+                    isFavorite = favorites.some(f => f.id == recipeId);
+                    updateFavButton();
+                }
+            }).fail(function (xhr) {
+                console.error("Error al verificar favoritos:", xhr.status, xhr.responseText);
             });
         }
 
@@ -221,7 +245,10 @@
         }
 
         $("#favButton").click(function () {
-            if (!token) return alert("Debes iniciar sesión.");
+            if (!token) {
+                alert("Debes iniciar sesión para guardar favoritos.");
+                return;
+            }
 
             if (isFavorite) {
                 $.ajax({
@@ -231,6 +258,10 @@
                 }).done(function () {
                     isFavorite = false;
                     updateFavButton();
+                    alert("Receta removida de favoritos.");
+                }).fail(function (xhr) {
+                    console.error("Error al quitar de favoritos:", xhr.status, xhr.responseText);
+                    alert("Error al quitar de favoritos.");
                 });
             } else {
                 $.ajax({
@@ -240,6 +271,10 @@
                 }).done(function () {
                     isFavorite = true;
                     updateFavButton();
+                    alert("Receta añadida a favoritos.");
+                }).fail(function (xhr) {
+                    console.error("Error al agregar a favoritos:", xhr.status, xhr.responseText);
+                    alert("Error al agregar a favoritos.");
                 });
             }
         });
