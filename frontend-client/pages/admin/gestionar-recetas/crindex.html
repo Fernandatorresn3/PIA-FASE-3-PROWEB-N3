@@ -125,7 +125,7 @@
             </a>
         </nav>
 
-        <a href="../dashboard/appindex.html" class="nav-link nav-footer d-flex align-items-center">
+        <a href="../../user/inicio/usppindex.html" class="nav-link nav-footer d-flex align-items-center">
             <i class="bi bi-arrow-left"></i>
             <span class="ms-2">Volver</span>
         </a>
@@ -171,6 +171,8 @@
 
 <!-- BOOTSTRAP + JQUERY -->
 <script src="../../../libs/bootstrap/js/bootstrap.min.js"></script>
+<!-- jQuery core (needed by jquery-ui and the page scripts) -->
+<script src="../../../libs/jquery-4.0.0-rc.1.min.js"></script>
 <script src="../../../libs/jquery-ui/jquery-ui.min.js"></script>
 
 <script>
@@ -199,23 +201,33 @@ function loadRecipes() {
             const tbody = document.getElementById("recipesBody");
             tbody.innerHTML = "";
 
-            data.forEach(recipe => {
+            // El backend puede devolver un Page object (con 'content') o un array directamente
+            const list = Array.isArray(data) ? data : (data.content || []);
+
+            list.forEach(recipe => {
+                // Adaptar a los nombres del DTO que devuelve el backend
+                const id = recipe.id;
+                const titulo = recipe.titulo || recipe.title || "Sin título";
+                const categoria = recipe.categoriaNombre || recipe.categoryName || "Sin categoría";
+                const fecha = recipe.fechaCreacion || recipe.createdAt || "N/A";
+                const puntuacion = recipe.calificacionPromedio != null ? recipe.calificacionPromedio : (recipe.averageRating || 0);
+
                 tbody.innerHTML += `
                     <tr>
-                        <td>${recipe.id}</td>
-                        <td>${recipe.title}</td>
-                        <td>${recipe.categoryName || "Sin categoría"}</td>
-                        <td>${recipe.createdAt || "N/A"}</td>
-                        <td>${recipe.averageRating || 0}</td>
+                        <td>${id}</td>
+                        <td>${titulo}</td>
+                        <td>${categoria}</td>
+                        <td>${fecha}</td>
+                        <td>${puntuacion}</td>
 
                         <td>
                             <button class="btn btn-warning btn-sm action-btn"
-                                onclick="editRecipe(${recipe.id})">
+                                onclick="editRecipe(${id})">
                                 <i class="bi bi-pencil-square"></i> Editar
                             </button>
 
                             <button class="btn btn-danger btn-sm"
-                                onclick="deleteRecipe(${recipe.id})">
+                                onclick="deleteRecipe(${id})">
                                 <i class="bi bi-trash"></i> Eliminar
                             </button>
                         </td>
@@ -239,8 +251,22 @@ function editRecipe(id) {
 function deleteRecipe(id) {
     if (!confirm("¿Seguro que deseas eliminar esta receta?")) return;
 
-    fetch(`http://localhost:8080/api/recipes/${id}`, { method: "DELETE" })
-        .then(() => loadRecipes());
+    // Llamar al endpoint admin (requiere autorización)
+    fetch(`http://localhost:8080/api/admin/recipes/${id}`, {
+        method: "DELETE",
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    })
+    .then(response => {
+        if (response.status === 204 || response.ok) {
+            loadRecipes();
+        } else {
+            console.error('Error al eliminar receta', response.status);
+            alert('No se pudo eliminar la receta. Asegúrate de tener permisos.');
+        }
+    })
+    .catch(err => console.error('Error al eliminar receta', err));
 }
 </script>
 

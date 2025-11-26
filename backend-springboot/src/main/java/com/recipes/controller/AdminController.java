@@ -28,12 +28,22 @@ public class AdminController {
     
     @PostMapping("/recipes")
     public ResponseEntity<RecipeDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
+        // Validación básica para evitar errores de persistencia por campos obligatorios
+        if (recipeDTO.getTitulo() == null || recipeDTO.getTitulo().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         RecipeDTO created = recipeService.create(recipeDTO);
         return ResponseEntity.ok(created);
     }
     
     @PutMapping("/recipes/{id}")
     public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable Long id, @RequestBody RecipeDTO recipeDTO) {
+        // Validación básica para evitar errores de persistencia por campos obligatorios
+        if (recipeDTO.getTitulo() == null || recipeDTO.getTitulo().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
         RecipeDTO updated = recipeService.update(id, recipeDTO);
         return ResponseEntity.ok(updated);
     }
