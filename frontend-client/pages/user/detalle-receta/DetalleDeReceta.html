@@ -66,8 +66,8 @@
         <hr>
 
         <!-- Comentarios -->
-        <h5>Comentarios</h5>
-        <div id="commentsList" class="mb-3"></div>
+    <h5>Comentarios <button id="showCommentsBtn" class="btn btn-sm btn-link">Mostrar comentarios</button></h5>
+    <div id="commentsList" class="mb-3"></div>
 
         <textarea id="commentText" class="form-control mb-2" placeholder="Escribe un comentario..."></textarea>
         <button id="sendComment" class="btn btn-primary">Enviar comentario</button>
@@ -123,12 +123,14 @@
         // 2. Cargar comentarios
         // ============================
         function loadComments() {
+            $("#showCommentsBtn").prop('disabled', true).text('Cargando...');
             $.ajax({
                 url: `${API_URL}/recipes/${recipeId}/comments`,
                 type: "GET"
             }).done(function (comments) {
                 if (!comments || comments.length === 0) {
                     $("#commentsList").html("<p class='text-muted'>No hay comentarios aún.</p>");
+                    $("#showCommentsBtn").text('Ocultar comentarios');
                     return;
                 }
                 $("#commentsList").empty();
@@ -141,9 +143,22 @@
                         </div>
                     `);
                 });
+                $("#showCommentsBtn").text('Ocultar comentarios');
             }).fail(function (xhr) {
                 console.error("Error al cargar comentarios:", xhr.status, xhr.responseText);
-                $("#commentsList").html("<p class='text-danger'>Error al cargar comentarios.</p>");
+                var userMessage = 'Error al cargar comentarios.';
+                try {
+                    var json = JSON.parse(xhr.responseText);
+                    if (json && json.message && json.message.includes('could not initialize proxy')) {
+                        userMessage = 'El servidor no pudo obtener los comentarios por un problema interno (serialización de datos). Intenta recargar más tarde.';
+                    } else if (json && json.message) {
+                        userMessage = json.message;
+                    }
+                } catch (e) {
+                    // no-op: usar mensaje genérico
+                }
+                $("#commentsList").html(`<p class='text-danger'>${userMessage}</p>`);
+                $("#showCommentsBtn").prop('disabled', false).text('Mostrar comentarios');
             });
         }
 
@@ -207,30 +222,7 @@
             });
         }
 
-        // ============================
-        // 5. Manejo de favoritos
-        // ============================
         let isFavorite = false;
-
-        function checkFavorite() {
-            if (!token) {
-                console.warn("No hay token. Usuario debe iniciar sesión.");
-                return;
-            }
-
-            $.ajax({
-                url: `${API_URL}/profile/favorites`,
-                type: "GET",
-                headers: { Authorization: "Bearer " + token }
-            }).done(function (favorites) {
-                if (favorites && Array.isArray(favorites)) {
-                    isFavorite = favorites.some(f => f.id == recipeId);
-                    updateFavButton();
-                }
-            }).fail(function (xhr) {
-                console.error("Error al verificar favoritos:", xhr.status, xhr.responseText);
-            });
-        }
 
         function updateFavButton() {
             if (isFavorite) {
@@ -250,7 +242,30 @@
                 return;
             }
 
-            if (isFavorite) {
+            if (!isFavorite) {
+                $.ajax({
+                    url: `${API_URL}/profile/favorites/${recipeId}`,
+                    type: "POST",
+                    headers: { Authorization: "Bearer " + token }
+                }).done(function () {
+                    isFavorite = true;
+                    updateFavButton();
+                    alert("Receta añadida a favoritos.");
+                }).fail(function (xhr) {
+                    console.error("Error al agregar a favoritos:", xhr.status, xhr.responseText);
+                    try {
+                        const json = JSON.parse(xhr.responseText);
+                        if (json && json.message && json.message.includes('could not initialize proxy')) {
+                            alert('No se pudo verificar/obtener la lista de favoritos desde el servidor. Intenta nuevamente o revisa tu sesión.');
+                            return;
+                        }
+                    } catch (e) {
+                        // no-op
+                    }
+
+                    alert("Error al agregar a favoritos.");
+                });
+            } else {
                 $.ajax({
                     url: `${API_URL}/profile/favorites/${recipeId}`,
                     type: "DELETE",
@@ -263,28 +278,16 @@
                     console.error("Error al quitar de favoritos:", xhr.status, xhr.responseText);
                     alert("Error al quitar de favoritos.");
                 });
-            } else {
-                $.ajax({
-                    url: `${API_URL}/profile/favorites/${recipeId}`,
-                    type: "POST",
-                    headers: { Authorization: "Bearer " + token }
-                }).done(function () {
-                    isFavorite = true;
-                    updateFavButton();
-                    alert("Receta añadida a favoritos.");
-                }).fail(function (xhr) {
-                    console.error("Error al agregar a favoritos:", xhr.status, xhr.responseText);
-                    alert("Error al agregar a favoritos.");
-                });
             }
         });
 
-        // ============================
-        // Inicializar pantalla
-        // ============================
-        loadRecipe();
-        loadComments();
-        checkFavorite();
+    // ============================
+    // Inicializar pantalla
+    // ============================
+    loadRecipe();
+    loadComments();
+    // No llamamos a la verificación que obtiene toda la lista de favoritos
+    // para evitar el error 500 en el backend por proxies Hibernate.
 
     </script>
 
