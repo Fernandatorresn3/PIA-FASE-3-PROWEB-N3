@@ -4,15 +4,14 @@ $(document).ready(function() {
 
     function loadProfile() {
         $.ajax({
-            url: '/api/profile/me',
+            url: 'http://localhost:8080/api/profile/me',
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token }
         }).done(function(data) {
             $('#profilePhoto').attr('src', data.imagenPerfil || 'default.png');
-            $('#fullName').text(data.nombre + " " + data.apellido);
+            $('#fullName').text(data.username);
             $('#shortDescription').text(data.descripcion || '');
-            $('#nombre').text(data.nombre);
-            $('#apellido').text(data.apellido);
+            $('#nombre').text(data.username);
             $('#email').text(data.email);
             $('#fechaRegistro').text(data.fechaRegistro);
             $('#profileIcon').attr('src', data.fotoPerfil || '....');
@@ -25,7 +24,7 @@ $(document).ready(function() {
     $('#logoutBtn').click(function(e) {
         e.preventDefault();
         $.ajax({
-            url: '/api/auth/logout',
+            url: 'http://localhost:8080/api/auth/logout',
             type: 'POST',
             headers: { 'Authorization': 'Bearer ' + token }
         }).always(function() {
