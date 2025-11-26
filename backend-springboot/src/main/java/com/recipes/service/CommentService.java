@@ -28,6 +28,7 @@ public class CommentService {
     private final CommentStatusRepository commentStatusRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<CommentDTO> findByRecipeId(Long recipeId) {
         List<Comment> comments = commentRepository.findByReceta_IdAndEstado_Nombre(recipeId, "APROBADO");
         return comments.stream()
@@ -67,6 +68,7 @@ public class CommentService {
         return dto;
     }
 
+    @Transactional(readOnly = true)
     public List<CommentDTO> findByCurrentUser() {
         List<Comment> comments = commentRepository.findByUsuario_Id(getCurrentUser().getId());
         return comments.stream()
