@@ -39,8 +39,10 @@ $(document).ready(function () {
             type: 'GET',
             headers: { 'Authorization': 'Bearer ' + token }
         })
-        .done(function(comments) {
+        .done(function(data) {
             tbody.empty();
+
+            const comments = data.content || data;
 
             if (comments.length === 0) {
                  tbody.append('<tr><td colspan="4" class="text-center text-secondary">No hay comentarios pendientes de moderación.</td></tr>');
