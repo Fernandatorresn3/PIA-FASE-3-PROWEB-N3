@@ -41,7 +41,7 @@ public class ProfileController {
     
     @GetMapping("/favorites")
     public ResponseEntity<List<RecipeDTO>> getFavorites() {
-        List<RecipeDTO> favorites = userService.getFavoriteRecipes();
+        List<RecipeDTO> favorites = userService.getFavoriteRecipesTransactional();
         return ResponseEntity.ok(favorites);
     }
     

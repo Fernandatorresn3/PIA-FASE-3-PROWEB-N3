@@ -84,6 +84,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public List<RecipeDTO> getFavoriteRecipesTransactional() {
+        return getFavoriteRecipes();
+    }
+
+    @Transactional(readOnly = true)
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usernameOrEmail = authentication.getName();
