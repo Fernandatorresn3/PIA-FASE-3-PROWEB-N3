@@ -47,6 +47,7 @@ public class AdminService {
         return convertUserToDTO(saved);
     }
 
+    @Transactional(readOnly = true)
     public Page<CommentDTO> getPendingComments(Pageable pageable) {
         return commentRepository.findByEstado_Nombre("PENDIENTE", pageable).map(this::convertCommentToDTO);
     }
