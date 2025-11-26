@@ -59,7 +59,7 @@ $(document).ready(function() {
   e.preventDefault();
 
   const newRecipe = {
-    nombre: $('#recipeName').val(),
+    titulo: $('#recipeName').val(),
     descripcion: $('#shortDescription').val(),
     paisOrigen: $('#countryOrigin').val(),
     categoriaId: $('#category').val(),
