@@ -93,28 +93,63 @@ $(document).ready(function() {
     ingredientes: $('#ingredients').val(),
     instrucciones: $('#steps').val(),
   };
+  // Si hay archivo seleccionado, subir primero y luego crear receta con imagenUrl
+  const file = $('#imageInput')[0] && $('#imageInput')[0].files[0];
 
-  $.ajax({
-    url: (function(){
-        const editId = $('#newRecipeForm').data('editId');
-        if (editId) return `http://localhost:8080/api/admin/recipes/${editId}`;
-        return 'http://localhost:8080/api/admin/recipes';
-    })(),
-    type: (function(){
-        return $('#newRecipeForm').data('editId') ? 'PUT' : 'POST';
-    })(),
-    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
-    contentType: 'application/json',
-    data: JSON.stringify(newRecipe)
-  }).done(function (){
-    alert("Receta guardada exitosamente");
-    $('#newRecipeForm')[0].reset();
-    // Si veníamos de edición, limpiar el estado y volver a lista
-    if ($('#newRecipeForm').data('editId')) {
-        $('#newRecipeForm').removeData('editId');
-        location.href = '../gestionar-recetas/crindex.html';
-    }
-  }).fail(function () {
-    alert("Error al guardar la receta");
-  });
+  function sendRecipe(payload) {
+    $.ajax({
+      url: (function(){
+          const editId = $('#newRecipeForm').data('editId');
+          if (editId) return `http://localhost:8080/api/admin/recipes/${editId}`;
+          return 'http://localhost:8080/api/admin/recipes';
+      })(),
+      type: (function(){
+          return $('#newRecipeForm').data('editId') ? 'PUT' : 'POST';
+      })(),
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      contentType: 'application/json',
+      data: JSON.stringify(payload)
+    }).done(function (){
+      alert("Receta guardada exitosamente");
+      $('#newRecipeForm')[0].reset();
+      if ($('#newRecipeForm').data('editId')) {
+          $('#newRecipeForm').removeData('editId');
+          location.href = '../gestionar-recetas/crindex.html';
+      }
+    }).fail(function () {
+      alert("Error al guardar la receta");
+    });
+  }
+
+  if (file) {
+    var fd = new FormData();
+    fd.append('file', file);
+    $.ajax({
+      url: 'http://localhost:8080/api/files/upload',
+      type: 'POST',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+      data: fd,
+      processData: false,
+      contentType: false
+    }).done(function(res) {
+      // response.filePath según API
+      newRecipe.imagenUrl = res.filePath;
+      sendRecipe(newRecipe);
+    }).fail(function() {
+      alert('Error al subir imagen');
+    });
+  } else {
+    sendRecipe(newRecipe);
+  }
  });
+
+// Previsualización de imagen seleccionada
+$('#imageInput').on('change', function() {
+  const f = this.files && this.files[0];
+  if (f) {
+    const url = URL.createObjectURL(f);
+    $('#imagePreview').attr('src', url).show();
+  } else {
+    $('#imagePreview').hide().attr('src', '');
+  }
+});

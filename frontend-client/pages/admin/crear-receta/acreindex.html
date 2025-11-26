@@ -88,6 +88,12 @@
             <textarea class="form-control form-control-oval" id="steps" rows="7" placeholder="Ej: 1.Cortar carne..2.Agregar cebolla" required></textarea>
         </div>
 
+        <div class="mb-3">
+            <label for="imageInput" class="form-label">Imagen (opcional)</label>
+            <input type="file" accept="image/*" class="form-control" id="imageInput">
+            <img id="imagePreview" src="" alt="Previsualización" style="display:none; max-width:200px; margin-top:8px; border-radius:6px;" />
+        </div>
+
         <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary" id="cancelBtn">Cancelar</button>
             <button type="submit" class="btn btn-primary">Guardar receta</button>
