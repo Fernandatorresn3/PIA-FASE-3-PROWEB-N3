@@ -59,21 +59,21 @@ $(document).ready(function() {
             url: `${apiBase}/recipes`,
             type: 'GET',
             data: {
-                page: currentPage,
-                size: pageSize,
+                pagina: currentPage,
+                limite: pageSize,
                 busqueda: busqueda,
                 categoria: categoria
             }
         }).done(function(data) {
             const $recipesGrid = $('#recipesGrid');
             $recipesGrid.empty();
-
-            if (!data || data.length === 0) {
+const recipes = (data && data.content) ? data.content : data;
+            if (!recipes || recipes.length === 0) {
                 $recipesGrid.append('<p class="text-center">No se encontraron recetas.</p>');
                 return;
             }
 
-            data.forEach(recipe => {
+            recipes.forEach(recipe => {
                 const imageFile = recipe.imagenUrl ? recipe.imagenUrl.split('/').pop() : '';
                 const imageUrl = imageFile ? `${apiBase}/files/images/${imageFile}` : 'placeholder.jpg';
 
