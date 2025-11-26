@@ -117,7 +117,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
         <div class="container-fluid">
             <div class="d-flex align-items-center">
-                <img src="...." class="logo-img me-2">
+                <img src="../../../assets/logo.png" class="logo-img me-2" alt="Logo">
                 <span class="navbar-brand mb-0 h1">Recetas Deliciosas</span>
             </div>
 
@@ -128,12 +128,12 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
                     <li class="nav-item"><a class="nav-link" href="../inicio/usppindex.html" id="linkInicio">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="RecetasDestacadas.html" id="linkRecetas">Recetas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./RecetasDestacadas.html" id="linkRecetas">Recetas</a></li>
                     <li class="nav-item"><a class="nav-link" href="../perfil/upuindex.html" id="linkPerfil">Mi perfil</a></li>
                     <li class="nav-item"><a class="nav-link" href="../acerca-de-nosotros/index.html" id="AcercadeNosotros">Acerca de nosotros</a></li>
                     <li class="nav-item d-flex align-items-center ms-2">
                         <a class="nav-link" href="#" id="logoutBtn">Cerrar sesión</a>
-                        <img id="profileIcon" src="...." class="rounded-circle ms-2 profile-icon">
+                        <img id="profileIcon" src="../../../assets/default-profile.png" class="rounded-circle ms-2 profile-icon" alt="Perfil">
                     </li>
                 </ul>
             </div>
@@ -155,12 +155,20 @@
 
 // Cargar favoritos
 function cargarDestacados() {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        console.warn("No hay token en localStorage. Usuario debe iniciar sesión.");
+        $("#recetasContainer").hide();
+        $("#emptyMsg").text("Por favor, inicia sesión para ver tus recetas destacadas.").show();
+        return;
+    }
 
     $.ajax({
         url: `${API_URL}/profile/favorites`,
         method: "GET",
         headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
+            "Authorization": "Bearer " + token
         },
         success: function (data) {
             if (!data || data.length === 0) {
@@ -195,8 +203,18 @@ function cargarDestacados() {
             });
         },
         error: function (xhr) {
-            console.error(xhr);
-            alert("Error al cargar recetas destacadas.");
+            console.error("Error al cargar favoritos:", xhr.status, xhr.statusText, xhr.responseText);
+            let errorMsg = "Error al cargar recetas destacadas.";
+            if (xhr.status === 401) {
+                errorMsg = "Sesión expirada. Por favor, inicia sesión nuevamente.";
+            } else if (xhr.status === 403) {
+                errorMsg = "No tienes permiso para acceder a tus favoritos.";
+            } else if (xhr.status === 0) {
+                errorMsg = "No se puede conectar al servidor. Verifica que el backend está corriendo en http://localhost:8080";
+            }
+            $("#recetasContainer").hide();
+            $("#emptyMsg").text(errorMsg).show();
+            alert(errorMsg);
         }
     });
 }
